@@ -1,0 +1,329 @@
+
+body, html {
+    margin: 0;
+    padding: 0;
+    background-color: #f4f5f7;
+    font-family: Liberation Sans;
+}
+.main {
+    width: 100%;
+}
+
+.bar {
+    padding: 20px;
+    background-color: white;
+    position: fixed;
+    width: 230px;
+    height: 100%;
+    box-shadow: 0 2px 5px 0 rgba(0,0,0,0.16), 0 2px 10px 0 rgba(0,0,0,0.12);
+}
+.bar h1 {
+    margin-top: 00px;
+    margin-bottom: 20px;
+}
+.nav-bar {
+    margin-bottom: 20px;
+}
+.nav-bar > ul {
+    list-style-type: none;
+    padding: 0;
+}
+.nav-bar > ul > li {
+    background-color: white;
+    color: black;
+}
+.nav-bar > ul > li a {
+    display: block;
+    padding: 10px;
+    text-decoration: none;
+    color: black;
+}
+.nav-bar .active-nav-item {
+    background-color: #0d6efd;
+}
+.nav-bar .active-nav-item a {
+    color: white;
+}
+.login-block {
+    position: fixed;
+    bottom: 20px;
+    width: 270px;
+}
+.button-exit {
+    display: inline-block;
+}
+.button-exit button, .button-del button {
+    cursor: pointer;
+    padding: 10px;
+    background-color: #dc3545;
+    color: white;
+    border: 0px;
+    border-radius: 5px;
+    font-size: 14px;
+}
+.button-exit button:hover, .button-del button:hover {
+    background-color: #be1526;
+}
+.login {
+    height: 100%;
+    display: inline-block;
+
+}
+.login p {
+    margin: 0px;
+    font-size: 12px;
+}
+.right-container {
+    margin-left: 270px;
+    padding: 30px;
+    height: 100%;
+}
+.container-header, .container-main, .notificate-message, .container-mini-main {
+    padding: 20px;
+    background-color: white;
+    box-shadow: 0 2px 5px 0 rgba(0,0,0,0.16), 0 2px 10px 0 rgba(0,0,0,0.12);
+    margin-bottom: 30px;
+}
+.notificate-message {
+    display: none;
+    background-color: #57c6195e;
+    padding: 10px 20px;
+}
+.notificate-message p {
+    color: rgba(60, 114, 33, 0.89);
+    margin: 0;
+}
+.container-header > div {
+    display: inline-block;
+}
+.header-title h2 {
+    font-weight: 400;
+    margin: 0px;
+}
+.container-mini-main {
+    display: inline-block;
+}
+.mini-main-1 {
+    width: calc( 50% - 55px);
+}
+.mini-main-2 {
+    float: right;
+    width: calc( 50% - 55px);
+}
+.container-main h3, .container-mini-main h3 {
+    margin: 0px;
+    font-weight: 400;
+    line-height: 1;
+    font-size: 20px;
+    margin-bottom: 20px;
+}
+.container-main hr, .container-mini-main hr {
+    margin: 0px;
+    color: #c0c0c0;
+    border-top: 0px;
+}
+.header-button {
+    padding: 0 20px;
+}
+.header-button > button , .button-add > button{
+    cursor: pointer;
+    padding: 10px;
+    background-color: #0d6efd;
+    border: 0;
+    border-radius: 5px;
+    color: white;
+}
+.header-button > button:hover , .button-add > button:hover {
+    background-color: #0b56c2;
+}
+.add-payment-button {
+    float: right;
+}
+.header-select {
+    float: right;
+}
+.header-select > input {
+    width: 200px
+}
+.header-select select {
+    font-size: 16px;
+    width: 100%;
+    border: 1px solid rgba(0,0,0,.125);
+    border-radius: 5px;
+    height: 30px;
+    background-color: white;
+}
+.table-payments {
+    margin-top: 20px;
+}
+.table-kids, .table-payments {
+    width: 100%;
+    border-collapse: collapse;
+}
+.table-payments .col-1 {
+    width: 15%;
+}
+.table-payments .col-2 {
+    width: 20%;
+}
+.table-payments .col-3 {
+    width: 20%;
+}
+.table-payments .col-4 {
+    width: 30%;
+}
+.table-payments .col-5 {
+    width: 15%;
+}
+.table-kids .col-1 {
+    width: 15%;
+}
+.table-kids .col-2 {
+    width: 20%;
+}
+.table-kids .col-3 {
+    width: 20%;
+}
+.table-kids .col-4 {
+    width: 35%;
+}
+.table-kids .col-5 {
+    font-size: 14px;
+    width: 10%;
+}
+.table-kids .col-5 a {
+    text-decoration: underline;
+    cursor: pointer;
+    color: blue;
+}
+.table-kids thead th, .table-payments thead th {
+    font-weight: 600;
+    border-bottom: 1px solid black;
+    border-right: 0px solid black;
+}
+.table-kids th, .table-payments th {
+    font-weight: 400;
+    font-size: 16px;
+    padding: 5px;
+    text-align: left;
+    vertical-align: center;
+}
+.table-kids table, .table-payments table {
+    border-collapse: separate;
+}
+.table-kids tbody th, .table-payments tbody th {
+    border-right: 1px dashed rgba(0,0,0,.125);
+    border-bottom: 1px solid rgba(0,0,0,.125);
+}
+.table-kids tbody .col-5 {
+    border-right: 0px;
+}
+
+/*popups*/
+.popup-back {
+    display: none;
+    overflow-x: hidden;
+    overflow-y: auto;
+    position: fixed;
+    top:0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.44);
+    width: 100%;
+    height: 100%;
+}
+.popup-container {
+    margin: 50px auto 0 auto;
+    max-width: 500px;
+    background-color: white;
+    border-radius: 5px;
+}
+.popap-header {
+
+    padding: 15px;
+    border-bottom: 1px solid rgba(0,0,0,.125);
+}
+.popap-header > div {
+    display: inline-block;
+}
+.popap-header .close {
+    float: right;
+}
+.popap-header .close i {
+    color: rgba(0, 0, 0, 0.34);
+    cursor: pointer;
+}
+.popap-header .close i:hover {
+    cursor: pointer;
+    color: rgb(108, 117, 125);
+}
+.popap-header h3 {
+    font-weight: 400;
+    font-family: Liberation Sans;
+    font-size: 20px;
+    margin: 0px;
+}
+.popap-main {
+    padding: 15px;
+    border-bottom: 1px solid rgba(0,0,0,.125);
+}
+.popap-main > form > div {
+    display: block;
+    margin-bottom: 10px;
+}
+.popap-main > form input, .popap-main > form textarea, .popap-main > form select {
+    margin-top: 10px;
+    font-size: 16px;
+    width: 100%;
+    min-width: 100%;
+    max-width: 100%;
+    border: 1px solid rgba(0,0,0,.125);
+    border-radius: 5px;
+    height: 30px;
+    background-color: white;
+}
+.popap-main > form textarea {
+    white-space: pre-wrap;
+    height: 100px;
+}
+.popap-main > form label {
+    margin-bottom: 5px;
+}
+.popap-main > form label > span {
+    color: rgb(108, 117, 125);
+    font-size: 14px;
+    display: block;
+    margin-top: 5px;
+}
+.popup-footer {
+    padding: 15px;
+}
+#editKid .popup-footer > div {
+    display: inline-block;
+    width: 50%;
+}
+.popup-footer > .button-add {
+    text-align: end;
+}
+.popup-footer > .button-del {
+    text-align: start;
+}
+.popap-main .added-classroom {
+    border-radius: 5px;
+    margin: 15px 0;
+    background-color: rgba(166, 166, 166, 0.31);
+    padding: 5px;
+}
+.popap-main .added-classroom p {
+    margin: 0;
+    display: inline-block;
+}
+.popap-main .added-classroom i {
+    float: right;
+}
+.error-message-input {
+    margin-top: 5px;
+    font-size: 12px;
+    color: red;
+}
+
+
