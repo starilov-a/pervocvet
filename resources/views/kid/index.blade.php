@@ -7,7 +7,7 @@
                 <button onclick="changePopup(document.getElementById('addKid'), true);return false;">Добавить</button>
             </div>
             <div class="header-select">
-                <select onchange="let filter = {classroom: this.options[this.selectedIndex].value}; refreshKidsList(filter)">
+                <select onchange="refreshList({'data-class':'kid','data-list':'list-kid'},{classroom: this.options[this.selectedIndex].value, page: 1})">
                     <option value="-1">Все</option>
                     @foreach($classrooms as $classroom)
                         <option value="{{$classroom->id}}">{{$classroom->classroom}}</option>
@@ -27,14 +27,13 @@
                     <th class="col-1">Имя</th>
                     <th class="col-2">Информация</th>
                     <th class="col-3">Группы</th>
-                    <th class="col-4">Истоия оплаты</th>
+                    <th class="col-4">Последнии платежи</th>
                     <th class="col-5"></th>
                 </tr>
                 </thead>
-                <tbody>
                 @include('kid.kidsList', ['kids' => $kids])
-                </tbody>
             </table>
+
         </div>
     </div>
     @include('kid.create', ['classrooms' => $classrooms])

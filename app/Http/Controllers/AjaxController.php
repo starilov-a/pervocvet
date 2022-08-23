@@ -27,10 +27,15 @@ class AjaxController extends Controller
             ]
     ];
 
+    private $modelClass = [
+        'payment' => 'App\\Payment',
+        'kid' => 'App\\Kid'
+    ];
+
     public function store (Request $request) {
         parse_str($request->getContent(), $data);
 
-        $validator = Validator::make($data, $this->validateFields[$data['class']],['required' => 'Необходимо указать поле :attribute']);
+        $validator = Validator::make($data, $this->validateFields[$data['metaData']['data-class']],['required' => 'Необходимо указать поле :attribute']);
         if(!empty($validator->getMessageBag()->getMessages()))
             return json_encode($validator->getMessageBag()->getMessages());
 
@@ -39,16 +44,60 @@ class AjaxController extends Controller
         return true;
     }
 
-    private function addData($data) {
-        if ($data['class'] == 'kid') {
+    public function update (Request $request) {
+        parse_str($request->getContent(), $data);
+
+        $validator = Validator::make($data, $this->validateFields[$data['metaData']['data-class']],['required' => 'Необходимо указать поле :attribute']);
+        if(!empty($validator->getMessageBag()->getMessages()))
+            return json_encode($validator->getMessageBag()->getMessages());
+
+        $this->updateData($data);
+
+        return true;
+    }
+
+    public function destroy(Request $request) {
+        parse_str($request->getContent(), $data);
+
+        $this->modelClass[$data['metaData']['data-class']]::find($data['metaData']['data-id-item'])->delete();
+        return 1;
+    }
+
+    private function addData ($data) {
+        if ($data['metaData']['data-class'] == 'kid') {
             $obj = Kid::addKid(['name' => $data['name'],'desc' => $data['desc']]);
             $obj->classrooms()->attach($data['classrooms']);
         }
-        if ($data['class'] == 'payment') {
+        if ($data['metaData']['data-class'] == 'payment') {
+            unset($data['metaData']);
             $data = array_diff($data, array(''));
-            unset($data['class']);
             Payment::addPayment($data);
         }
+    }
+
+    private function updateData ($data) {
+        if ($data['metaData']['data-class'] == 'kid') {
+            $kid = Kid::find($data['metaData']['data-id-item']);
+            $kid->update([
+                'name' => $data['name'],
+                'desc' => $data['desc']
+            ]);
+            $kid->updateClassrooms($data['classrooms']);
+        }
+        if ($data['metaData']['data-class'] == 'payment') {
+            $payment = Payment::find($data['metaData']['data-id-item']);
+            unset($data['metaData']);
+            $data = array_diff($data, array(''));
+            $payment->update($data);
+        }
+    }
+
+    public function list (Request $request) {
+        parse_str($request->getContent(), $data);
+
+        $html = $this->modelClass[$data['filter']['metaData']['data-class']]::filterList($data['filter']);
+
+        return ['success' => true, 'html' => $html, 'list' => $data['filter']['metaData']['data-list']];
     }
 
 }

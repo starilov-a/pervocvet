@@ -24,8 +24,7 @@
                     <th class="col-5">Приход</th>
                 </tr>
                 </thead>
-                <tbody>
-                </tbody>
+                @include('payment.byClassroomsList', ['classrooms' => $classrooms])
             </table>
         </div>
         <div class="container-mini-main mini-main-2">
@@ -40,8 +39,7 @@
                     <th class="col-5">Приход</th>
                 </tr>
                 </thead>
-                <tbody>
-                </tbody>
+                @include('payment.byKidsList', ['kids' => $kids])
             </table>
         </div>
         <div class="container-main">
@@ -55,13 +53,13 @@
                     <th class="col-3">Услуга</th>
                     <th class="col-4">Примечание</th>
                     <th class="col-5">Приход</th>
+                    <th class="col-6"></th>
                 </tr>
                 </thead>
-                <tbody>
-                @include('payment.paymentsList', ['$payments' => $payments])
-                </tbody>
+                @include('payment.paymentsList', ['payments' => $payments])
             </table>
         </div>
     </div>
     @include('payment.create')
+    @include('payment.edit')
 @endsection

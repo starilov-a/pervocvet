@@ -21,7 +21,9 @@ class KidController extends Controller
      */
     public function index()
     {
-        return view('kid.index', ['classrooms' => Classroom::all(), 'kids' => Kid::filterList()]);
+        return view('kid.index', [
+            'classrooms' => Classroom::all(),
+            'kids' => Kid::latest('created_at')->where('deleted', 0)->limit(config('app.limit_on_longlist'))->get()]);
     }
 
     /**
@@ -94,24 +96,7 @@ class KidController extends Controller
      */
     public function update(Kid $kid, Request $request)
     {
-        parse_str($request->getContent(), $data);
 
-        $validator = Validator::make($data, [
-            'name' => 'required',
-            'desc' => 'required',
-            'classrooms' => 'required'
-        ],['required' => 'Необходимо указать поле :attribute']);
-
-        if(!empty($validator->getMessageBag()->getMessages()))
-            return json_encode($validator->getMessageBag()->getMessages());
-
-        $kid->update([
-            'name' => $data['name'],
-            'desc' => $data['desc']
-        ]);
-        $kid->updateClassrooms($data['classrooms']);
-
-        return 1;
     }
 
     /**
@@ -122,17 +107,6 @@ class KidController extends Controller
      */
     public function destroy(Kid $kid)
     {
-        $kid->destroy($kid->id);
 
-        return 1;
-    }
-    public function kidsList(Request $request) {
-
-
-        parse_str($request->getContent(), $data);
-
-        $kids = Kid::filterList($data['filter']);
-
-        return ['success' => true, 'html' => view('kid.kidsList', ['kids' => $kids])->render()];
     }
 }

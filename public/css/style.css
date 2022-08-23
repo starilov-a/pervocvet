@@ -122,6 +122,9 @@ body, html {
     color: #c0c0c0;
     border-top: 0px;
 }
+.container-main > a {
+    color: #0d6efd;
+}
 .header-button {
     padding: 0 20px;
 }
@@ -159,6 +162,11 @@ body, html {
 .table-kids, .table-payments {
     width: 100%;
     border-collapse: collapse;
+    margin-bottom: 20px;
+}
+.more-page th {
+    border-right: 0px !important;
+    border-bottom: 0px !important;
 }
 .table-payments .col-1 {
     width: 15%;
@@ -191,10 +199,10 @@ body, html {
     font-size: 14px;
     width: 10%;
 }
-.table-kids .col-5 a {
+.container-main a{
     text-decoration: underline;
     cursor: pointer;
-    color: blue;
+    color: #0d6efd;
 }
 .table-kids thead th, .table-payments thead th {
     font-weight: 600;
@@ -297,7 +305,7 @@ body, html {
 .popup-footer {
     padding: 15px;
 }
-#editKid .popup-footer > div {
+#editKid .popup-footer > div,  #editPayment .popup-footer > div{
     display: inline-block;
     width: 50%;
 }
@@ -326,4 +334,60 @@ body, html {
     color: red;
 }
 
+
+/*Выпадающий блок*/
+.col-4 details{
+    display:block;
+    border-radius: 5px;
+    overflow:hidden;
+    border: 1px solid rgba(0,0,0,.125);
+}
+.col-4 summary::-webkit-details-marker{display:none;}
+.col-4 summary::-moz-list-bullet{list-style-type:none;}
+.col-4 summary::marker{display:none;}
+.col-4 summary {
+    display:block;
+    padding: .3em 1em .3em .9em;
+    border: 1px solid rgba(0,0,0,.125);
+    font-size: 16px;
+    cursor: pointer;
+    position: relative;
+}
+.col-4 summary:before {
+    top: .4em;
+    right: .3em;
+    color: transparent;
+    background: url("data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyNCIgaGVpZ2h0PSIyNCIgdmlld0JveD0iMCAwIDI0IDI0Ij48cGF0aCBkPSJNMTYuNTkgOC41OUwxMiAxMy4xNyA3LjQxIDguNTkgNiAxMGw2IDYgNi02eiIvPjxwYXRoIGQ9Ik0wIDBoMjR2MjRIMHoiIGZpbGw9Im5vbmUiLz48L3N2Zz4=") no-repeat 50% 50% / 1em 1em;
+    width: 1em;
+    height: 1em;
+    content: "";
+    position: absolute;
+    transition: transform .5s;
+}
+.col-4 details[open] > summary:before {
+    transform: scale(1,-1);
+}
+.col-4 summary ~ * {
+    margin: 0;
+    padding: 10px;
+}
+.col-4 details[open] summary ~ *{
+    animation: sweep .5s ease-in-out;
+}
+@keyframes sweep {
+    0%    {opacity: 0;}
+    100%  {opacity: 1;}
+}
+.col-4 summary:focus {
+    z-index: 3;
+    border-color: #86b7fe;
+    outline:0;
+    box-shadow: 0 0 0 .25rem rgba(13,110,253,.25);
+}
+.col-4 details p {
+    margin-top: 0px;
+}
+.col-4 details span {
+    color: #34c924;
+}
 

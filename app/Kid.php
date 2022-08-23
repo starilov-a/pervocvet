@@ -8,7 +8,7 @@ use App\Payment;
 
 class Kid extends Model
 {
-    protected $fillable = ['name','desc'];
+    protected $fillable = ['name','desc','deleted'];
 
     public static function addKid($attr) {
         return Kid::create($attr);
@@ -25,26 +25,31 @@ class Kid extends Model
         $this->classrooms()->detach($oldClassrooms->diffKeys($newClassrooms));
     }
 
+    public function delete() {
+        $this->update([
+            'deleted' => 1
+        ]);
+    }
+
     public function payments() {
         return $this->hasMany(Payment::class);
     }
 
     public static function filterList($filter = null) {
-        $kids = self::latest('created_at');
+        $kids = self::latest('created_at')->where('deleted', 0);
 
-        if (isset($filter['classroom']) && $filter['classroom'] > 0) {
+        if (isset($filter['classroom']) && $filter['classroom'] > 0)
             $kids = $kids->whereHas('classrooms', function ($query) use($filter) {
                 $query->where('id', '=', $filter['classroom']);
             });
-        }
 
-        $page = 100;
-        if(isset($filter['page'])) {
+        $page = 1;
+        if(isset($filter['page']))
             $page = $filter['page'];
-        }
 
-        //Добавить константу лимита
-        return $kids->limit($page*8)->get();
+        $kids = $kids->limit($page*config('app.limit_on_longlist'))->get();
+
+        return view('kid.kidsList', ['kids' => $kids])->render();
     }
 
 }

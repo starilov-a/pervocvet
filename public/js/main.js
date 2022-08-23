@@ -1,3 +1,10 @@
+let customFormData = {
+    classrooms: [],
+};
+let editKidId = '';
+let token = document.querySelector('meta[name="csrf-token"]').content;
+let filters = {}
+
 function changePopup(popup, status, time = null){
     if(status){
         popup.style.display = 'block';
@@ -15,15 +22,6 @@ function changePopup(popup, status, time = null){
     }
 
 }
-let customFormData = {
-    classrooms: [],
-};
-let editKidId = '';
-let token = document.querySelector('meta[name="csrf-token"]').content;
-let filters = {
-    page: 1
-}
-
 function addClassroom(id, form) {
 
     id = Number(id);
@@ -69,18 +67,58 @@ function createErrors(responseErrors, form){
 function serializeForm(form) {
     let inputs = form.querySelectorAll('[name]');
     let data = {};
+    let attrs = [].filter.call(form.attributes, function(at) { return /^data-/.test(at.name); });
+    let metaData = {};
 
+    for (var i = 0; i < attrs.length; i++)
+        metaData = Object.assign(metaData, Object.fromEntries([[attrs[i].name, attrs[i].value]]));
     for (let i = 0; i < inputs.length; i++)
         data = Object.assign(data, Object.fromEntries([[inputs[i].name, inputs[i].value]]));
+
+
     data = Object.assign(data, customFormData);
+    data.metaData = metaData;
 
     return data;
 }
+function nextPage(meta) {
+    let filter = {
+        page: Number(document.getElementById(meta['data-list']).getAttribute('data-page')) + 1
+    }
+    refreshList(meta, filter);
+}
 /* AJAXs*/
+function refreshList(meta, filter) {
+    filter = Object.assign(filters, filter);
+    filter.metaData = meta;
+    $.ajax({
+        headers: {
+            'X-CSRF-TOKEN' : token
+        },
+        url: "/ajax/list",
+        dataType: 'json',
+        method: "POST",
+        data: {
+            filter
+        },
+        contentType: 'application/json',
+        success: function (response) {
+            let page = 1;
+            let table = document.getElementById(filter.metaData['data-list']);
+            (filter['page'] !== undefined)
+                page = filter['page'];
+
+            table.setAttribute('data-page', page)
+
+            table.innerHTML = '';
+            table.insertAdjacentHTML('afterbegin',
+                response.html);
+        }
+    });
+}
 
 function addPopupAjax(form) {
     let data = serializeForm(form);
-
     $.ajax({
         headers: {
             'X-CSRF-TOKEN' : token
@@ -94,7 +132,7 @@ function addPopupAjax(form) {
         success: function (response) {
             if(response === 1){
 
-                refreshKidsList();
+                refreshList(data.metaData);
 
                 changePopup(form.closest('.popup-back'), false);
                 changePopup(document.getElementById('notificate-message-add'), true, 3000)
@@ -105,61 +143,61 @@ function addPopupAjax(form) {
         }
     });
 }
-
-
-
-
-function addKid(form) {
-    let data = {
-        name: form.name.value,
-        desc: form.desc.value,
-        classrooms: classrooms,
-    }
+function editPopupAjax(form) {
+    let data = serializeForm(form);
     $.ajax({
         headers: {
             'X-CSRF-TOKEN' : token
         },
-        url: "/kids/store",
+        url: "/ajax/update",
         dataType: 'json',
         processData: 'false',
         data: data,
-        method: "POST",
+        method: "PATCH",
+        contentType: 'application/json',
+        success: function (response) {
+            if(response === 1){
+                refreshList(data.metaData);
+
+                changePopup(form.closest('.popup-back'), false);
+                changePopup(document.getElementById('notificate-message-edit'), true, 3000)
+
+            } else {
+                clearErrors(form);
+                createErrors(response, form);
+            }
+        }
+    });
+}
+function delPopupAjax(form) {
+    let data = serializeForm(form);
+    $.ajax({
+        headers: {
+            'X-CSRF-TOKEN' : token
+        },
+        url: "/ajax/destroy",
+        dataType: 'json',
+        processData: 'false',
+        data: data,
+        method: "DELETE",
         contentType: 'application/json',
         success: function (response) {
             if(response === 1){
 
-                refreshKidsList();
+                refreshList(data.metaData);
 
                 changePopup(form.closest('.popup-back'), false);
-                changePopup(document.getElementById('notificate-message-add'), true, 3000)
-            } else {
-                clearErrors(form);
-                createErrors(response, form);
+                changePopup(document.getElementById('notificate-message-delete'), true, 3000)
+
             }
+        },
+        errors: function (response) {
+            console.log(response);
         }
     });
 }
-function refreshKidsList(filter) {
-    filter = Object.assign(filters, filter);
-    $.ajax({
-        headers: {
-            'X-CSRF-TOKEN' : token
-        },
-        url: "/kids/list",
-        dataType: 'json',
-        method: "POST",
-        data: {
-            filter
-        },
-        contentType: 'application/json',
-        success: function (response) {
-            let table = document.getElementsByTagName('tbody')[0]
-            table.innerHTML = '';
-            table.insertAdjacentHTML('afterbegin',
-                response.html);
-        }
-    });
-}
+
+
 function getKid(id) {
     editKidId = id;
     $.ajax({
@@ -174,69 +212,36 @@ function getKid(id) {
             let form = document.getElementById('form-kid-edit');
             form.name.value = response.name;
             form.desc.value = response.desc;
-            form.setAttribute('data-id', id);
+            form.setAttribute('data-id-item', id);
             for(i = 0; i < response.classrooms.length; i++) {
                 addClassroom(response.classrooms[i].id, document.getElementById('form-kid-edit'))
             }
         }
     });
 }
-function editKid(form) {
-    let data = {
-        name: form.name.value,
-        desc: form.desc.value,
-        classrooms: classrooms,
-    }
+function getPayment(id) {
+    editPaymentId = id;
     $.ajax({
         headers: {
             'X-CSRF-TOKEN' : token
         },
-        url: "/kids/update/"+editKidId,
+        url: "/payments/"+id,
         dataType: 'json',
-        processData: 'false',
-        data: data,
-        method: "PATCH",
+        method: "GET",
         contentType: 'application/json',
         success: function (response) {
-            if(response === 1){
+            let form = document.getElementById('form-payment-edit');
 
-                refreshKidsList();
-
-                changePopup(form.closest('.popup-back'), false);
-                changePopup(document.getElementById('notificate-message-edit'), true, 3000)
-
-            } else {
-                clearErrors(form);
-                createErrors(response, form);
-            }
+            form.name.value = response.name;
+            form.desc.value = response.desc;
+            form.payment.value = response.payment;
+            form['classroom_id'].value = response['classroom_id'];
+            form['kid_id'].value = response['kid_id'];
+            form.setAttribute('data-id-item', id);
         }
     });
 }
-function delKid(form, id) {
-    $.ajax({
-        headers: {
-            'X-CSRF-TOKEN' : token
-        },
-        url: "/kids/"+id,
-        dataType: 'json',
-        processData: 'false',
-        method: "DELETE",
-        contentType: 'application/json',
-        success: function (response) {
-            if(response === 1){
 
-                refreshKidsList();
-
-                changePopup(form.closest('.popup-back'), false);
-                changePopup(document.getElementById('notificate-message-delete'), true, 3000)
-
-            }
-        },
-        errors: function (response) {
-            console.log(response);
-        }
-    });
-}
 
 
 

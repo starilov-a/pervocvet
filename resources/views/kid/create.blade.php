@@ -6,8 +6,7 @@
         </div>
         <div class="popap-main">
             @include('layouts.errors')
-            <form id="form-kid-create">
-                <input hidden name="class" value="kid">
+            <form id="form-kid-create" data-class='kid' data-list='list-kid'>
                 <div>
                     <label>Имя ребёнка</label>
                     <input name="name">

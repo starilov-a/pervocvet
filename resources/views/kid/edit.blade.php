@@ -6,7 +6,7 @@
         </div>
         <div class="popap-main">
             @include('layouts.errors')
-            <form id="form-kid-edit">
+            <form id="form-kid-edit" data-class='kid' data-list='list-kid'>
                 <div>
                     <label>Имя ребёнка</label>
                     <input name="name">
@@ -21,7 +21,7 @@
                 <div>
                     <label>Выбор группы:</label>
                     <select name="classrooms" onchange="addClassroom(this.value, this.closest('form'))">
-                        <option value="-1">Отсутствует</option>
+                        <option value="">Отсутствует</option>
                         @foreach($classrooms as $classroom)
                             <option value="{{$classroom->id}}">{{$classroom->classroom}}</option>
                         @endforeach
@@ -31,9 +31,9 @@
         </div>
         <div class="popup-footer">
             <div class="button-del">
-                <button onclick="delKid(document.getElementById('form-kid-edit'), document.getElementById('form-kid-edit').getAttribute('data-id'))">Удалить</button>
+                <button onclick="delPopupAjax(document.getElementById('form-kid-edit'))">Удалить</button>
             </div><div class="button-add">
-                <button onclick="editKid(document.getElementById('form-kid-edit'))">Изменить</button>
+                <button onclick="editPopupAjax(document.getElementById('form-kid-edit'))">Изменить</button>
             </div>
         </div>
     </div>

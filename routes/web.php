@@ -26,9 +26,12 @@ Route::post('/kids/store', 'KidController@store');
 Route::get('/kids/{kid}', 'KidController@show');
 Route::delete('/kids/{kid}', 'KidController@destroy');
 Route::patch('/kids/update/{kid}', 'KidController@update');
-Route::post('/kids/list', 'KidController@kidsList');
 
 Route::get('/payments', 'PaymentController@index');
+Route::get('/payments/{payment}', 'PaymentController@show');
 
 Route::post('/ajax/store', 'AjaxController@store');
+Route::patch('/ajax/update', 'AjaxController@update');
+Route::delete('/ajax/destroy', 'AjaxController@destroy');
+Route::post('/ajax/list', 'AjaxController@list');
 

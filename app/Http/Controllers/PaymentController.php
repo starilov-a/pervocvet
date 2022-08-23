@@ -16,7 +16,7 @@ class PaymentController extends Controller
      */
     public function index()
     {
-        return view('payment.index', ['classrooms' => Classroom::all(), 'kids' => Kid::all(), 'payments' => Payment::all()]);
+        return view('payment.index', ['classrooms' => Classroom::where('deleted', 0)->get(), 'kids' => Kid::where('deleted', 0)->get(), 'payments' => Payment::where('deleted', 0)->latest('created_at')->limit(config('app.limit_on_longlist'))->get()]);
     }
 
     /**
@@ -48,7 +48,12 @@ class PaymentController extends Controller
      */
     public function show(Payment $payment)
     {
-        //
+        $data['kid_id'] = $payment->kid->id;
+        $data['classroom_id'] = $payment->classroom->id;
+        $data['payment'] = $payment->payment;
+        $data['desc'] = $payment->desc;
+
+        return $data;
     }
 
     /**

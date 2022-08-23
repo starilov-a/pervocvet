@@ -1,12 +1,12 @@
-<div class="popup-back" id="addPayment" onclick="if(event.target.classList[0] == 'popup-back') changePopup(this, false);">
+<div class="popup-back" id="editPayment" onclick="if(event.target.classList[0] == 'popup-back') changePopup(this, false);">
     <div class="popup-container">
         <div class="popap-header">
-            <div class="title"><h3>Добавить приход</h3></div>
+            <div class="title"><h3>Редактировать информацию</h3></div>
             <div class="close"><i class="fa fa-times" aria-hidden="true" onclick="changePopup(this.closest('.popup-back'), false)"></i></div>
         </div>
         <div class="popap-main">
             @include('layouts.errors')
-            <form id="form-payment-create" data-class='payment' data-list='list-payment'>
+            <form id="form-payment-edit" data-class='payment' data-list='list-payment'>
                 <div>
                     <label>Имя ребёнка</label>
                     <select name="kid_id">
@@ -40,8 +40,10 @@
             </form>
         </div>
         <div class="popup-footer">
-            <div class="button-add">
-                <button onclick="addPopupAjax(document.getElementById('form-payment-create'))">Добавить</button>
+            <div class="button-del">
+                <button onclick="delPopupAjax(document.getElementById('form-payment-edit'))">Удалить</button>
+            </div><div class="button-add">
+                <button onclick="editPopupAjax(document.getElementById('form-payment-edit'))">Изменить</button>
             </div>
         </div>
     </div>
