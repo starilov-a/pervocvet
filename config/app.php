@@ -228,6 +228,7 @@ return [
         'View' => Illuminate\Support\Facades\View::class,
 
     ],
-    'limit_on_longlist' => env('LIMIT_ON_LONGLIST',8),
+    'limit_on_longlist' => env('LIMIT_ON_LONGLIST',10),
+    'limit_on_shortlist' => env('LIMIT_ON_SHORTLIST',5),
 
 ];

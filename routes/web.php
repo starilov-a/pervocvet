@@ -19,8 +19,6 @@ Route::get('/', function () {
 
 Auth::routes();
 
-Route::get('/home', 'HomeController@index')->name('home');
-
 Route::get('/kids', 'KidController@index');
 Route::post('/kids/store', 'KidController@store');
 Route::get('/kids/{kid}', 'KidController@show');

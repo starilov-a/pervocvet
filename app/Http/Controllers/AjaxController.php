@@ -32,6 +32,13 @@ class AjaxController extends Controller
         'kid' => 'App\\Kid'
     ];
 
+    private $viewLists = [
+        'list-kid' => 'kid.kidsList',
+        'list-payment' => 'payment.paymentsList',
+        'list-payment-classrooms' => 'payment.byClassroomsList',
+        'list-payment-kids' => 'payment.byKidsList',
+    ];
+
     public function store (Request $request) {
         parse_str($request->getContent(), $data);
 
@@ -95,7 +102,7 @@ class AjaxController extends Controller
     public function list (Request $request) {
         parse_str($request->getContent(), $data);
 
-        $html = $this->modelClass[$data['filter']['metaData']['data-class']]::filterList($data['filter']);
+        $html = $this->modelClass[$data['filter']['metaData']['data-class']]::filterList($data['filter'], $this->viewLists[$data['filter']['metaData']['data-list']]);
 
         return ['success' => true, 'html' => $html, 'list' => $data['filter']['metaData']['data-list']];
     }

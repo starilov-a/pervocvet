@@ -30,10 +30,11 @@
             </form>
         </div>
         <div class="popup-footer">
+            <div class="button-add">
+                <button onclick="editPopupAjax(document.getElementById('form-kid-edit'))">Изменить</button>
+            </div>
             <div class="button-del">
                 <button onclick="delPopupAjax(document.getElementById('form-kid-edit'))">Удалить</button>
-            </div><div class="button-add">
-                <button onclick="editPopupAjax(document.getElementById('form-kid-edit'))">Изменить</button>
             </div>
         </div>
     </div>

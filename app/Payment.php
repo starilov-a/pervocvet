@@ -28,14 +28,27 @@ class Payment extends Model
         ]);
     }
 
-    public static function filterList($filter = null) {
+    public static function filterList($filter = null, $view) {
+
         $payments = self::latest('created_at')->where('deleted', 0);
 
         $page = 1;
-        if(isset($filter['page'])) {
+        if(isset($filter['page']))
             $page = $filter['page'];
-        }
 
-        return view('payment.paymentsList', ['payments' => $payments->limit($page*config('app.limit_on_longlist'))->get()])->render();
+        $limit = $page*config('app.limit_on_longlist');
+
+        if(isset($filter['metaData']['count-on-page']))
+            $limit = $page*$filter['metaData']['count-on-page'];
+
+        if(isset($filter['classroom']))
+            $payments = $payments->where('classroom_id', $filter['classroom']);
+
+        if(isset($filter['kid']))
+            $payments = $payments->where('kid_id', $filter['kid']);
+
+
+
+        return view($view, ['payments' => $payments->limit($limit)->get()])->render();
     }
 }

@@ -24,11 +24,11 @@
             <table class="table-kids">
                 <thead>
                 <tr>
-                    <th class="col-1">Имя</th>
-                    <th class="col-2">Информация</th>
-                    <th class="col-3">Группы</th>
-                    <th class="col-4">Последнии платежи</th>
-                    <th class="col-5"></th>
+                    <td class="col-1">Имя</th>
+                    <td class="col-2">Информация</th>
+                    <td class="col-3">Группы</th>
+                    <td class="col-4">Последнии платежи</th>
+                    <td class="col-5"></th>
                 </tr>
                 </thead>
                 @include('kid.kidsList', ['kids' => $kids])

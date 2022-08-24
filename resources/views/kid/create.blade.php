@@ -33,6 +33,7 @@
             <div class="button-add">
                 <button onclick="addPopupAjax(document.getElementById('form-kid-create'))">Добавить</button>
             </div>
+            <div style="clear:both"></div>
         </div>
     </div>
 </div>

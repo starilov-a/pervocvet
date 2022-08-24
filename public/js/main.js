@@ -88,9 +88,14 @@ function nextPage(meta) {
     refreshList(meta, filter);
 }
 /* AJAXs*/
-function refreshList(meta, filter) {
-    filter = Object.assign(filters, filter);
+function refreshList(meta, filter = {}) {
+
+    if(filters[meta['data-list']] == undefined)
+        filters[meta['data-list']] = {};
+
+    filter = Object.assign(filters[meta['data-list']], filter)
     filter.metaData = meta;
+
     $.ajax({
         headers: {
             'X-CSRF-TOKEN' : token

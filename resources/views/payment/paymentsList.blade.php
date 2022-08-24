@@ -2,26 +2,26 @@
     <tbody id="list-payment" data-page="1">
         @foreach($payments as $payment)
             <tr>
-                <th class="col-1">{{ $payment->created_at }}</th>
-                <th class="col-2">{{ $payment->kid->name }}</th>
-                <th class="col-3">{{ $payment->classroom->classroom }}</th>
-                <th class="col-4">{{ $payment->desc }}</th>
-                <th class="col-5">+{{ $payment->payment }}</th>
-                <th class="col-6"><a onclick="changePopup(document.getElementById('editPayment'), true);getPayment({{ $payment->id }});return false;" >Изменить</a></th>
+                <td class="col-1"><b>{{ $payment->created_at }}</b></th>
+                <td class="col-2">{{ $payment->kid->name }}</th>
+                <td class="col-3">{{ $payment->classroom->classroom }}</th>
+                <td class="col-4">{{ $payment->desc }}</th>
+                <td class="col-5"><span class="green-price" >+{{ $payment->payment }} руб.</span></th>
+                <td class="col-6"><a onclick="changePopup(document.getElementById('editPayment'), true);getPayment({{ $payment->id }});return false;" >Изменить</a></th>
             </tr>
         @endforeach
-        @if( $payment->count() % config('app.limit_on_longlist') == 0)
+        @if( $payments->count() % config('app.limit_on_longlist') == 0)
             <tr class="more-page">
-                <th>
+                <td>
                     <a onclick="nextPage({'data-class':'payment','data-list':'list-payment'})" >Показать еще</a>
-                </th>
+                </td>
             </tr>
         @endif
     </tbody>
 @else
     <tbody id="list-payment" data-page="1">
         <tr>
-            <th colspan="5">Записи отсутствуют</th>
+            <td colspan="5">Записи отсутствуют</th>
         </tr>
     </tbody>
 @endif

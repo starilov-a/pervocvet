@@ -35,7 +35,7 @@ class Kid extends Model
         return $this->hasMany(Payment::class);
     }
 
-    public static function filterList($filter = null) {
+    public static function filterList($filter = null, $view) {
         $kids = self::latest('created_at')->where('deleted', 0);
 
         if (isset($filter['classroom']) && $filter['classroom'] > 0)
@@ -49,7 +49,7 @@ class Kid extends Model
 
         $kids = $kids->limit($page*config('app.limit_on_longlist'))->get();
 
-        return view('kid.kidsList', ['kids' => $kids])->render();
+        return view($view, ['kids' => $kids])->render();
     }
 
 }

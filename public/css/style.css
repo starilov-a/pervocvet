@@ -103,6 +103,9 @@ body, html {
 .container-mini-main {
     display: inline-block;
 }
+.container-mini-main h3 {
+    display: inline-block;
+}
 .mini-main-1 {
     width: calc( 50% - 55px);
 }
@@ -126,7 +129,7 @@ body, html {
     color: #0d6efd;
 }
 .header-button {
-    padding: 0 20px;
+    padding-left: 20px;
 }
 .header-button > button , .button-add > button{
     cursor: pointer;
@@ -164,7 +167,7 @@ body, html {
     border-collapse: collapse;
     margin-bottom: 20px;
 }
-.more-page th {
+.more-page td {
     border-right: 0px !important;
     border-bottom: 0px !important;
 }
@@ -199,17 +202,17 @@ body, html {
     font-size: 14px;
     width: 10%;
 }
-.container-main a{
+.container-main a, .container-mini-main a{
     text-decoration: underline;
     cursor: pointer;
     color: #0d6efd;
 }
-.table-kids thead th, .table-payments thead th {
+.table-kids thead td, .table-payments thead td {
     font-weight: 600;
     border-bottom: 1px solid black;
     border-right: 0px solid black;
 }
-.table-kids th, .table-payments th {
+.table-kids td, .table-payments td {
     font-weight: 400;
     font-size: 16px;
     padding: 5px;
@@ -219,7 +222,7 @@ body, html {
 .table-kids table, .table-payments table {
     border-collapse: separate;
 }
-.table-kids tbody th, .table-payments tbody th {
+.table-kids tbody td, .table-payments tbody td {
     border-right: 1px dashed rgba(0,0,0,.125);
     border-bottom: 1px solid rgba(0,0,0,.125);
 }
@@ -306,10 +309,10 @@ body, html {
     padding: 15px;
 }
 #editKid .popup-footer > div,  #editPayment .popup-footer > div{
-    display: inline-block;
-    width: 50%;
+
 }
 .popup-footer > .button-add {
+    float: right;
     text-align: end;
 }
 .popup-footer > .button-del {
@@ -387,7 +390,7 @@ body, html {
 .col-4 details p {
     margin-top: 0px;
 }
-.col-4 details span {
+.green-price {
     color: #34c924;
 }
 

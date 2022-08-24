@@ -43,6 +43,7 @@
             <div class="button-add">
                 <button onclick="addPopupAjax(document.getElementById('form-payment-create'))">Добавить</button>
             </div>
+            <div style="clear:both"></div>
         </div>
     </div>
 </div>
