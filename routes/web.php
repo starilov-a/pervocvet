@@ -19,8 +19,8 @@ Route::get('/', function () {
 
 Auth::routes();
 Route::get('/logout', 'Auth\LoginController@logout');
-Route::group( [ 'middleware' => 'admin', 'prefix' => 'admin' ], function () {
-    Route::get('/register', 'Auth\RegisterController@register');
+Route::group( [ 'middleware' => 'admin'], function () {
+    Route::get('/register', 'Auth\RegisterController@showRegistrationForm')->name('register');
 });
 
 Route::get('/kids', 'KidController@index');
