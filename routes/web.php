@@ -18,6 +18,10 @@ Route::get('/', function () {
 });
 
 Auth::routes();
+Route::get('/logout', 'Auth\LoginController@logout');
+Route::group( [ 'middleware' => 'admin', 'prefix' => 'admin' ], function () {
+    Route::get('/register', 'Auth\RegisterController@register');
+});
 
 Route::get('/kids', 'KidController@index');
 Route::post('/kids/store', 'KidController@store');
@@ -32,4 +36,8 @@ Route::post('/ajax/store', 'AjaxController@store');
 Route::patch('/ajax/update', 'AjaxController@update');
 Route::delete('/ajax/destroy', 'AjaxController@destroy');
 Route::post('/ajax/list', 'AjaxController@list');
+
+
+
+
 

@@ -1,4 +1,6 @@
 @include('layouts.header')
-@include('layouts.bar')
+    @if(auth()->check())
+        @include('layouts.bar')
+    @endif
 @yield('content')
 @include('layouts.footer')

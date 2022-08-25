@@ -7,7 +7,9 @@
                 <td class="col-3">{{ $payment->classroom->classroom }}</th>
                 <td class="col-4">{{ $payment->desc }}</th>
                 <td class="col-5"><span class="green-price" >+{{ $payment->payment }} руб.</span></th>
-                <td class="col-6"><a onclick="changePopup(document.getElementById('editPayment'), true);getPayment({{ $payment->id }});return false;" >Изменить</a></th>
+                @can('update', $payment)
+                    <td class="col-6"><a onclick="changePopup(document.getElementById('editPayment'), true);getPayment({{ $payment->id }});return false;" >Изменить</a></th>
+                @endcan
             </tr>
         @endforeach
         @if( $payments->count() % config('app.limit_on_longlist') == 0)

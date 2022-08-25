@@ -8,10 +8,10 @@
     </div>
     <div class="login-block">
         <div class="button-exit">
-            <button>Выход</button>
+            <a href="/logout"><button>Выход</button></a>
         </div>
         <div class="login">
-            <p>Иванова Анастасия</p>
+            <p> {{ auth()->user()->name }} </p>
         </div>
     </div>
 </div>
