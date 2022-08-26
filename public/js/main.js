@@ -249,5 +249,27 @@ function getPayment(id) {
 
 
 
+//datapicker
+let dataPiker = $('button[name="datefilter"]');
+
+dataPiker.daterangepicker({
+    autoUpdateInput: false,
+    locale: {
+        cancelLabel: 'Clear'
+    }
+});
+
+dataPiker.on('apply.daterangepicker', function(ev, picker) {
+    console.log($(this).data('list'));
+    refreshList({'data-class':'payment','data-list': $(this).data('list')}, {dateRange: picker.startDate.format('YYYY-MM-DD') + '|' + picker.endDate.format('YYYY-MM-DD')} )
+});
+
+dataPiker.on('cancel.daterangepicker', function(ev, picker) {
+    refreshList({'data-class':'payment','data-list': $(this).data('list')}, {dateRange: null} )
+
+});
+
+
+
 
 

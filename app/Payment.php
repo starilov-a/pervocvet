@@ -29,7 +29,6 @@ class Payment extends Model
     }
 
     public static function filterList($filter = null, $view) {
-
         $payments = self::latest('created_at')->where('deleted', 0);
 
         $page = 1;
@@ -37,6 +36,11 @@ class Payment extends Model
             $page = $filter['page'];
 
         $limit = $page*config('app.limit_on_longlist');
+
+        if (isset($filter['dateRange']) && !empty($filter['dateRange'])) {
+            $dateRange = explode('|', $filter['dateRange']);
+            $payments = $payments->where('created_at', '>=', $dateRange[0])->where('created_at', '<=', $dateRange[1]);
+        }
 
         if(isset($filter['metaData']['count-on-page']))
             $limit = $page*$filter['metaData']['count-on-page'];
