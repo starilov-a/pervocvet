@@ -8,6 +8,8 @@ use Illuminate\Foundation\Auth\AuthenticatesUsers;
 use Illuminate\Http\Request;
 use Illuminate\Validation\ValidationException;
 
+use App\Notifications\TwoFactorCode;
+
 class LoginController extends Controller
 {
     /*
@@ -58,5 +60,13 @@ class LoginController extends Controller
         throw ValidationException::withMessages([
             'noMatches' => 'Неверный логин или пароль',
         ]);
+    }
+
+    protected function authenticated(Request $request, $user)
+    {
+        //скорее всего сдесть проверка на другое устройство
+        //раскоментить для работы двойной аутентификации
+//        $user->generateTwoFactorCode();
+//        $user->notify(new TwoFactorCode());
     }
 }
