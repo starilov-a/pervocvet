@@ -7,10 +7,7 @@
                 <button onclick="changePopup(document.getElementById('addPayment'), true);return false;">Добавить приход</button>
             </div>
         </div>
-
-        @include('payment.notificate.add')
-        @include('payment.notificate.edit')
-        @include('payment.notificate.delete')
+        @include('layouts.notificates.successMessage')
         <div>
             <div class="container-mini-main mini-main-1">
                 <h3>По группе</h3>
@@ -91,7 +88,7 @@
         </div>
     </div>
     @include('payment.create')
-    @can('update', $payments)
+    @if( auth()->user()->isAdmin() )
         @include('payment.edit')
-    @endcan
+    @endif
 @endsection

@@ -2,17 +2,37 @@
 
 namespace App;
 
-use Illuminate\Database\Eloquent\Model;
-use App\Classroom;
-use App\Payment;
+use App\Abstracts\KindergartenService,
+    App\Classroom,
+    App\Payment;
 
-class Kid extends Model
+class Kid extends KindergartenService
 {
     protected $fillable = ['name','desc','deleted'];
 
-    public static function addKid($attr) {
-        return Kid::create($attr);
+    public static $notificateMessage = [
+        'add'=>'Ребенок добавлен',
+        'delete'=>'Информация о ребенке удалена',
+        'update'=>'Информация о ребёнке изменена',
+    ];
+
+    //AJAX
+    public static function addData($data) {
+        $kid = self::addKid(['name' => $data['name'],'desc' => $data['desc']]);
+        $kid->classrooms()->attach($data['classrooms']);
     }
+    public static function updateData($data) {
+        $kid = self::find($data['metaData']['data-id-item']);
+        $kid->update([
+            'name' => $data['name'],
+            'desc' => $data['desc']
+        ]);
+        $kid->updateClassrooms($data['classrooms']);
+    }
+    public static function delData($data) {
+        self::find($data['metaData']['data-id-item'])->delete();
+    }
+    //
 
     public function classrooms() {
         return $this->belongsToMany(Classroom::class);
@@ -23,6 +43,9 @@ class Kid extends Model
         $oldClassrooms = $this->classrooms->keyBy('id');
         $this->classrooms()->attach($newClassrooms->diffKeys($oldClassrooms));
         $this->classrooms()->detach($oldClassrooms->diffKeys($newClassrooms));
+    }
+    public static function addKid($attr) {
+        return Kid::create($attr);
     }
 
     public function delete() {

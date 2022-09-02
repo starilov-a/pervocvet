@@ -13,6 +13,7 @@ use App\Payment;
 
 class AjaxController extends Controller
 {
+    //FIXIT сделать выбор нужного роута в JS и каждый контроллер сам выполняет действия. После этого данный контроллер будет не нужен
     //Проблемы с защитой, тк в js могу поменять kid на payment (Например)
     private $validateFields = [
         'payment' => [
@@ -24,12 +25,16 @@ class AjaxController extends Controller
             'name' => 'required',
             'classrooms' => 'required',
             'desc' => 'required'
+            ],
+        'classroom' => [
+            'classroom' => 'required'
             ]
     ];
 
     private $modelClass = [
         'payment' => 'App\\Payment',
-        'kid' => 'App\\Kid'
+        'kid' => 'App\\Kid',
+        'classroom' => 'App\\Classroom'
     ];
 
     private $viewLists = [
@@ -37,6 +42,7 @@ class AjaxController extends Controller
         'list-payment' => 'payment.paymentsList',
         'list-payment-classrooms' => 'payment.byClassroomsList',
         'list-payment-kids' => 'payment.byKidsList',
+        'list-classroom' => 'classroom.classroomsList',
     ];
 
     public function store (Request $request) {
@@ -46,9 +52,9 @@ class AjaxController extends Controller
         if(!empty($validator->getMessageBag()->getMessages()))
             return json_encode($validator->getMessageBag()->getMessages());
 
-        $this->addData($data);
+        $this->modelClass[$data['metaData']['data-class']]::addData($data);
 
-        return true;
+        return ['success' => true, 'notificateMessage' => $this->modelClass[$data['metaData']['data-class']]::$notificateMessage['add']];
     }
 
     public function update (Request $request) {
@@ -58,45 +64,16 @@ class AjaxController extends Controller
         if(!empty($validator->getMessageBag()->getMessages()))
             return json_encode($validator->getMessageBag()->getMessages());
 
-        $this->updateData($data);
+        $this->modelClass[$data['metaData']['data-class']]::updateData($data);
 
-        return true;
+        return ['success' => true, 'notificateMessage' => $this->modelClass[$data['metaData']['data-class']]::$notificateMessage['update']];
     }
 
     public function destroy(Request $request) {
         parse_str($request->getContent(), $data);
+        $this->modelClass[$data['metaData']['data-class']]::delData($data);
 
-        $this->modelClass[$data['metaData']['data-class']]::find($data['metaData']['data-id-item'])->delete();
-        return 1;
-    }
-
-    private function addData ($data) {
-        if ($data['metaData']['data-class'] == 'kid') {
-            $obj = Kid::addKid(['name' => $data['name'],'desc' => $data['desc']]);
-            $obj->classrooms()->attach($data['classrooms']);
-        }
-        if ($data['metaData']['data-class'] == 'payment') {
-            unset($data['metaData']);
-            $data = array_diff($data, array(''));
-            Payment::addPayment($data);
-        }
-    }
-
-    private function updateData ($data) {
-        if ($data['metaData']['data-class'] == 'kid') {
-            $kid = Kid::find($data['metaData']['data-id-item']);
-            $kid->update([
-                'name' => $data['name'],
-                'desc' => $data['desc']
-            ]);
-            $kid->updateClassrooms($data['classrooms']);
-        }
-        if ($data['metaData']['data-class'] == 'payment') {
-            $payment = Payment::find($data['metaData']['data-id-item']);
-            unset($data['metaData']);
-            $data = array_diff($data, array(''));
-            $payment->update($data);
-        }
+        return ['success' => true, 'notificateMessage' => $this->modelClass[$data['metaData']['data-class']]::$notificateMessage['delete']];
     }
 
     public function list (Request $request) {

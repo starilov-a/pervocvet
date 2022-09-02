@@ -22,12 +22,12 @@ Route::group([
     'middleware' => ['auth', 'twofactor']
 ], function () {
     Route::get('/kids', 'KidController@index')->name('kids');
-    Route::post('/kids/store', 'KidController@store');
     Route::get('/kids/{kid}', 'KidController@show');
-    Route::delete('/kids/{kid}', 'KidController@destroy');
-    Route::patch('/kids/update/{kid}', 'KidController@update');
 
-    Route::get('/payments', 'PaymentController@index');
+    Route::get('/classrooms', 'ClassroomController@index')->name('classrooms');
+    Route::get('/classrooms/{classroom}', 'ClassroomController@show');
+
+    Route::get('/payments', 'PaymentController@index')->name('payments');
     Route::get('/payments/{payment}', 'PaymentController@show');
 
     Route::post('/ajax/store', 'AjaxController@store');

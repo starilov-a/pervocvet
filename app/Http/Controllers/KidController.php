@@ -26,7 +26,7 @@ class KidController extends Controller
     public function index()
     {
         return view('kid.index', [
-            'classrooms' => Classroom::all(),
+            'classrooms' => Classroom::latest('created_at')->where('deleted', 0)->get(),
             'kids' => Kid::latest('created_at')->where('deleted', 0)->limit(config('app.limit_on_longlist'))->get()]);
     }
 

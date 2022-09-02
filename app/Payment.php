@@ -2,16 +2,40 @@
 
 namespace App;
 
-use Illuminate\Database\Eloquent\Model;
+use App\Abstracts\KindergartenService,
+    App\Kid,
+    App\Classroom;
 
-use App\Kid;
-use App\Classroom;
 
-
-class Payment extends Model
+class Payment extends KindergartenService
 {
+    public static $notificateMessage = [
+        'add'=>'Оплата добавлена',
+        'delete'=>'Информация об оплате удалена',
+        'update'=>'Информация об оплате изменена',
+    ];
 
     protected $fillable = ['payment','desc', 'kid_id', 'classroom_id', 'deleted'];
+
+    //AJAX
+    public static function addData($data) {
+        //FIXIT убрать unset
+        unset($data['metaData']);
+        $data = array_diff($data, array(''));
+        self::addPayment($data);
+    }
+    public static function updateData($data) {
+        $payment = self::find($data['metaData']['data-id-item']);
+        //FIXIT убрать unset
+        unset($data['metaData']);
+        $data = array_diff($data, array(''));
+        $payment->update($data);
+    }
+    public static function delData($data) {
+        self::find($data['metaData']['data-id-item'])->delete();;
+    }
+    //
+
 
     public function kid() {
         return $this->belongsTo(Kid::class);
