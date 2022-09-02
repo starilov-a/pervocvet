@@ -14,7 +14,7 @@ class ClassroomController extends Controller
      */
     public function index()
     {
-        //
+        return view('classroom.index', ['classrooms' => Classroom::all()]);
     }
 
     /**
@@ -46,7 +46,10 @@ class ClassroomController extends Controller
      */
     public function show(Classroom $classroom)
     {
-        //
+        $data['classroom'] = $classroom->payment;
+        $data['desc'] = $classroom->desc;
+
+        return $data;
     }
 
     /**
