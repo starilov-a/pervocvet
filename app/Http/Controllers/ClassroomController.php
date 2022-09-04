@@ -14,7 +14,7 @@ class ClassroomController extends Controller
      */
     public function index()
     {
-        //
+        return view('classroom.index', ['classrooms' => Classroom::latest('created_at')->where('deleted', 0)->limit(config('app.limit_on_longlist'))->get()]);
     }
 
     /**
@@ -46,7 +46,10 @@ class ClassroomController extends Controller
      */
     public function show(Classroom $classroom)
     {
-        //
+        $data['classroom'] = $classroom->classroom;
+        $data['desc'] = $classroom->desc;
+
+        return $data;
     }
 
     /**

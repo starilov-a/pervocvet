@@ -15,11 +15,7 @@
                 </select>
             </div>
         </div>
-
-        @include('kid.notificate.add')
-        @include('kid.notificate.edit')
-        @include('kid.notificate.delete')
-
+        @include('layouts.notificates.successMessage')
         <div class="container-main">
             <table class="table-kids">
                 <thead>

@@ -87,6 +87,14 @@ function nextPage(meta) {
     }
     refreshList(meta, filter);
 }
+function showNotificateMessage(notificateBlock, message = null) {
+    if(message !== null) {
+        notificateBlock.innerHTML = '';
+        notificateBlock.insertAdjacentHTML('afterbegin',
+            '<p>'+message+'</p>');
+    }
+    changePopup(notificateBlock, true, 3000)
+}
 /* AJAXs*/
 function refreshList(meta, filter = {}) {
 
@@ -135,13 +143,14 @@ function addPopupAjax(form) {
         method: "POST",
         contentType: 'application/json',
         success: function (response) {
-            if(response === 1){
+            if(response.success){
 
                 refreshList(data.metaData);
 
                 changePopup(form.closest('.popup-back'), false);
-                changePopup(document.getElementById('notificate-message-add'), true, 3000)
+                showNotificateMessage(document.getElementsByClassName('notificate-message')[0], response.notificateMessage)
             } else {
+                console.log(response);
                 clearErrors(form);
                 createErrors(response, form);
             }
@@ -161,11 +170,11 @@ function editPopupAjax(form) {
         method: "PATCH",
         contentType: 'application/json',
         success: function (response) {
-            if(response === 1){
+            if(response.success){
                 refreshList(data.metaData);
 
                 changePopup(form.closest('.popup-back'), false);
-                changePopup(document.getElementById('notificate-message-edit'), true, 3000)
+                showNotificateMessage(document.getElementsByClassName('notificate-message')[0], response.notificateMessage)
 
             } else {
                 clearErrors(form);
@@ -187,12 +196,12 @@ function delPopupAjax(form) {
         method: "DELETE",
         contentType: 'application/json',
         success: function (response) {
-            if(response === 1){
+            if(response.success){
 
                 refreshList(data.metaData);
 
                 changePopup(form.closest('.popup-back'), false);
-                changePopup(document.getElementById('notificate-message-delete'), true, 3000)
+                showNotificateMessage(document.getElementsByClassName('notificate-message')[0], response.notificateMessage)
 
             }
         },
@@ -246,6 +255,47 @@ function getPayment(id) {
         }
     });
 }
+function getClassroom(id) {
+    editClassroomId = id;
+    $.ajax({
+        headers: {
+            'X-CSRF-TOKEN' : token
+        },
+        url: "/classrooms/"+id,
+        dataType: 'json',
+        method: "GET",
+        contentType: 'application/json',
+        success: function (response) {
+            let form = document.getElementById('form-classroom-edit');
+
+            form.classroom.value = response.classroom;
+            form.desc.value = response.desc;
+            form.setAttribute('data-id-item', id);
+        }
+    });
+}
+
+
+
+//datapicker
+let dataPiker = $('button[name="datefilter"]');
+
+dataPiker.daterangepicker({
+    autoUpdateInput: false,
+    locale: {
+        cancelLabel: 'Clear'
+    }
+});
+
+dataPiker.on('apply.daterangepicker', function(ev, picker) {
+    console.log($(this).data('list'));
+    refreshList({'data-class':'payment','data-list': $(this).data('list')}, {dateRange: picker.startDate.format('YYYY-MM-DD') + '|' + picker.endDate.format('YYYY-MM-DD')} )
+});
+
+dataPiker.on('cancel.daterangepicker', function(ev, picker) {
+    refreshList({'data-class':'payment','data-list': $(this).data('list')}, {dateRange: null} )
+
+});
 
 
 

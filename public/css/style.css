@@ -89,11 +89,17 @@ body, html {
 }
 .notificate-message {
     display: none;
+    width: 200px;
+    position: fixed;
+    top: 10px;
+    left: calc(100% - 50% - 100px);
+    z-index: 10;
     background-color: #57c6195e;
     padding: 10px 20px;
 }
 .notificate-message p {
     color: rgba(60, 114, 33, 0.89);
+    text-align: center;
     margin: 0;
 }
 .container-header > div {
@@ -156,16 +162,26 @@ body, html {
 }
 .header-select select {
     font-size: 16px;
-    width: 100%;
     border: 1px solid rgba(0,0,0,.125);
     border-radius: 5px;
     height: 30px;
     background-color: white;
 }
+.header-select button {
+    background-color: white;
+    height: 30px;
+    border: 1px solid rgba(0,0,0,.125);
+    border-radius: 5px;
+}
+.header-select button:focus {
+    border-color: #86b7fe;
+    outline:0;
+    box-shadow: 0 0 0 .25rem rgba(13,110,253,.25);
+}
 .table-payments {
     margin-top: 20px;
 }
-.table-kids, .table-payments {
+.table-kids, .table-payments, .table-classrooms {
     width: 100%;
     border-collapse: collapse;
     margin-bottom: 20px;
@@ -205,27 +221,36 @@ body, html {
     font-size: 14px;
     width: 10%;
 }
+.table-classrooms .col-1 {
+    width: auto;
+}
+.table-classrooms .col-2 {
+    width: auto;
+}
+.table-classrooms .col-5 {
+    width: 15%;
+}
 .container-main a, .container-mini-main a{
     text-decoration: underline;
     cursor: pointer;
     color: #0d6efd;
 }
-.table-kids thead td, .table-payments thead td {
+thead td {
     font-weight: 600;
     border-bottom: 1px solid black;
     border-right: 0px solid black;
 }
-.table-kids td, .table-payments td {
+td {
     font-weight: 400;
     font-size: 16px;
     padding: 5px;
     text-align: left;
     vertical-align: center;
 }
-.table-kids table, .table-payments table {
+table {
     border-collapse: separate;
 }
-.table-kids tbody td, .table-payments tbody td {
+tbody td {
     border-right: 1px dashed rgba(0,0,0,.125);
     border-bottom: 1px solid rgba(0,0,0,.125);
 }

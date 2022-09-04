@@ -7,14 +7,12 @@
                 <button onclick="changePopup(document.getElementById('addPayment'), true);return false;">Добавить приход</button>
             </div>
         </div>
-
-        @include('payment.notificate.add')
-        @include('payment.notificate.edit')
-        @include('payment.notificate.delete')
+        @include('layouts.notificates.successMessage')
         <div>
             <div class="container-mini-main mini-main-1">
                 <h3>По группе</h3>
                 <div class="header-select">
+                    <button name="datefilter" data-list="list-payment-classrooms"><i class="fa fa-calendar" aria-hidden="true"></i></button>
                     <select onchange="refreshList({'data-class':'payment','data-list':'list-payment-classrooms', 'count-on-page':{{config('app.limit_on_shortlist')}} },{classroom: this.options[this.selectedIndex].value, page: 1})">
                         <option value="">Не выбрано</option>
                         @foreach($classrooms as $classroom)
@@ -22,6 +20,7 @@
                         @endforeach
                     </select>
                 </div>
+
                 <hr>
                 <table class="table-payments">
                     <thead>
@@ -42,6 +41,7 @@
             <div class="container-mini-main mini-main-2">
                 <h3>По ребёнку</h3>
                 <div class="header-select">
+                    <button name="datefilter" data-list="list-payment-kids"><i class="fa fa-calendar" aria-hidden="true"></i></button>
                     <select onchange="refreshList({'data-class':'payment','data-list':'list-payment-kids', 'count-on-page':{{config('app.limit_on_shortlist')}} },{kid: this.options[this.selectedIndex].value, page: 1})">
                         <option value="">Не выбрано</option>
                         @foreach($kids as $kid)
@@ -88,5 +88,7 @@
         </div>
     </div>
     @include('payment.create')
-    @include('payment.edit')
+    @if( auth()->user()->isAdmin() )
+        @include('payment.edit')
+    @endif
 @endsection

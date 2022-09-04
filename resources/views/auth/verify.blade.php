@@ -1,28 +1,41 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="container">
-    <div class="row justify-content-center">
-        <div class="col-md-8">
-            <div class="card">
-                <div class="card-header">{{ __('Verify Your Email Address') }}</div>
-
-                <div class="card-body">
-                    @if (session('resent'))
-                        <div class="alert alert-success" role="alert">
-                            {{ __('A fresh verification link has been sent to your email address.') }}
-                        </div>
-                    @endif
-
-                    {{ __('Before proceeding, please check your email for a verification link.') }}
-                    {{ __('If you did not receive the email') }},
-                    <form class="d-inline" method="POST" action="{{ route('verification.resend') }}">
-                        @csrf
-                        <button type="submit" class="btn btn-link p-0 m-0 align-baseline">{{ __('click here to request another') }}</button>.
-                    </form>
+    <div class="auth-container">
+        @if(session()->has('message'))
+            <p class="alert alert-info">
+                {{ session()->get('message') }}
+            </p>
+        @endif
+        <form method="POST" action="{{ route('verify.store') }}">
+            {{ csrf_field() }}
+            <h1>Двухфакторная аутентификация</h1>
+            <p class="text-muted">
+                You have received an email which contains two factor login code.
+                If you haven't received it, press <a href="{{ route('verify.resend') }}">here</a>.
+            </p>
+            <div class="input-group mb-3">
+                <div class="input-group-prepend">
+                <span class="input-group-text">
+                    <i class="fa fa-lock"></i>
+                </span>
+                </div>
+                <input name="two_factor_code" type="text"
+                       class="form-control{{ $errors->has('two_factor_code') ? ' is-invalid' : '' }}"
+                       required autofocus placeholder="Two Factor Code">
+                @if($errors->has('two_factor_code'))
+                    <div class="invalid-feedback">
+                        {{ $errors->first('two_factor_code') }}
+                    </div>
+                @endif
+            </div>
+            <div class="row">
+                <div class="col-6">
+                    <button type="submit" class="btn btn-primary px-4">
+                        Verify
+                    </button>
                 </div>
             </div>
-        </div>
+        </form>
     </div>
-</div>
 @endsection
