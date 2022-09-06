@@ -21,10 +21,10 @@
         </div>
         <div class="popup-footer">
             <div class="button-add">
-                <button onclick="editPopupAjax(document.getElementById('form-classroom-edit'))">Изменить</button>
+                <button href='' onclick="editPopupAjax(this, document.getElementById('form-classroom-edit'))">Изменить</button>
             </div>
             <div class="button-del">
-                <button onclick="delPopupAjax(document.getElementById('form-classroom-edit'))">Удалить</button>
+                <button href='' onclick="delPopupAjax(this, document.getElementById('form-classroom-edit'))">Удалить</button>
             </div>
         </div>
     </div>

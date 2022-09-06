@@ -15,20 +15,13 @@ class Payment extends KindergartenService
         'update'=>'Информация об оплате изменена',
     ];
 
+    public static $requiredFields = [
+        'kid_id' => 'required',
+        'classroom_id' => 'required',
+        'payment' => 'required',
+    ];
+
     protected $fillable = ['payment','desc', 'kid_id', 'classroom_id', 'deleted'];
-
-    public static function addData($data) {
-        //FIXIT убрать unset
-        unset($data['metaData']);
-        $data = array_diff($data, array(''));
-        self::addPayment($data);
-    }
-    public static function delData($data) {
-
-    }
-    public static function updateData($data) {
-
-    }
 
     public function kid() {
         return $this->belongsTo(Kid::class);
@@ -68,8 +61,17 @@ class Payment extends KindergartenService
         if(isset($filter['kid']))
             $payments = $payments->where('kid_id', $filter['kid']);
 
-
-
         return view($view, ['payments' => $payments->limit($limit)->get()])->render();
+    }
+
+    public function updateAjax($data){
+        unset($data['metaData']);
+        $data = array_diff($data, array(''));
+        $this->update($data);
+    }
+    public function createAjax($data){
+        unset($data['metaData']);
+        $data = array_diff($data, array(''));
+        $this->create($data);
     }
 }

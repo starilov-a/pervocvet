@@ -21,7 +21,7 @@
         </div>
         <div class="popup-footer">
             <div class="button-add">
-                <button onclick="addPopupAjax(document.getElementById('form-classroom-create'))">Добавить</button>
+                <button href="/classrooms" onclick="addPopupAjax(this, document.getElementById('form-classroom-create'))">Добавить</button>
             </div>
             <div style="clear:both"></div>
         </div>

@@ -16,22 +16,11 @@ class Kid extends KindergartenService
         'update'=>'Информация о ребёнке изменена',
     ];
 
-    public static function addData($data) {
-        $kid = self::addKid(['name' => $data['name'],'desc' => $data['desc']]);
-        $kid->classrooms()->attach($data['classrooms']);
-    }
-    public static function updateData($data) {
-        $kid = self::find($data['metaData']['data-id-item']);
-        $kid->update([
-            'name' => $data['name'],
-            'desc' => $data['desc']
-        ]);
-        $kid->updateClassrooms($data['classrooms']);
-    }
-    public static function delData($data) {
-
-    }
-
+    public static $requiredFields = [
+        'name' => 'required',
+        'classrooms' => 'required',
+        'desc' => 'required'
+    ];
 
     public function classrooms() {
         return $this->belongsToMany(Classroom::class);
@@ -42,9 +31,6 @@ class Kid extends KindergartenService
         $oldClassrooms = $this->classrooms->keyBy('id');
         $this->classrooms()->attach($newClassrooms->diffKeys($oldClassrooms));
         $this->classrooms()->detach($oldClassrooms->diffKeys($newClassrooms));
-    }
-    public function addKid($attr) {
-        return Kid::create($attr);
     }
 
     public function delete() {
@@ -72,6 +58,18 @@ class Kid extends KindergartenService
         $kids = $kids->limit($page*config('app.limit_on_longlist'))->get();
 
         return view($view, ['kids' => $kids])->render();
+    }
+
+    public function updateAjax($data){
+        $this->update([
+            'name' => $data['name'],
+            'desc' => $data['desc']
+        ]);
+        $this->updateClassrooms($data['classrooms']);
+    }
+    public function createAjax($data){
+        $kid = $this->create(['name' => $data['name'],'desc' => $data['desc']]);
+        $kid->classrooms()->attach($data['classrooms']);
     }
 
 }

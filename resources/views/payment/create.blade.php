@@ -41,7 +41,7 @@
         </div>
         <div class="popup-footer">
             <div class="button-add">
-                <button onclick="addPopupAjax(document.getElementById('form-payment-create'))">Добавить</button>
+                <button href="/payments" onclick="addPopupAjax(this, document.getElementById('form-payment-create'))">Добавить</button>
             </div>
             <div style="clear:both"></div>
         </div>

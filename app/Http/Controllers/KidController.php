@@ -3,21 +3,17 @@
 namespace App\Http\Controllers;
 
 
-use Illuminate\Auth\Events\Validated;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Validator;
-use Symfony\Component\Console\Input\Input;
+use Illuminate\Http\Request,
+    App\Http\Controllers\AjaxController,
+    App\Classroom,
+    App\Kid;
 
-use App\Classroom;
-use App\Kid;
-
-
-class KidController extends Controller
+class KidController extends AjaxController
 {
-    public function __construct()
-    {
-        $this->middleware('auth');
-    }
+    protected static $viewLists = [
+        'list-kid' => 'kid.kidsList'
+    ];
+
     /**
      * Display a listing of the resource.
      *
@@ -48,21 +44,8 @@ class KidController extends Controller
      */
     public function store(Request $request)
     {
-        parse_str($request->getContent(), $data);
-
-        $validator = Validator::make($data, [
-            'name' => 'required',
-            'desc' => 'required',
-            'classrooms' => 'required'
-        ],['required' => 'Необходимо указать поле :attribute']);
-
-        if(!empty($validator->getMessageBag()->getMessages()))
-            return json_encode($validator->getMessageBag()->getMessages());
-
-        $kid = Kid::addKid(['name' => $data['name'],'desc' => $data['desc']]);
-        $kid->classrooms()->attach($data['classrooms']);
-
-        return true;
+        if($this->isAjax($request))
+            return $this->storeAjax(new Kid, $request);
     }
 
     /**
@@ -71,13 +54,17 @@ class KidController extends Controller
      * @param  \App\Kid  $kid
      * @return \Illuminate\Http\Response
      */
-    public function show(Kid $kid)
+    public function show(Kid $kid, Request $request)
     {
-        $data['classrooms'] = $kid->classrooms;
-        $data['name'] = $kid->name;
-        $data['desc'] = $kid->desc;
+        if($this->isAjax($request))
+            if ($this->isAjax($request)) {
+                $data['classrooms'] = $kid->classrooms;
+                $data['name'] = $kid->name;
+                $data['desc'] = $kid->desc;
 
-        return $data;
+                return $data;
+            }
+
     }
 
     /**
@@ -100,7 +87,8 @@ class KidController extends Controller
      */
     public function update(Kid $kid, Request $request)
     {
-
+        if($this->isAjax($request))
+            return $this->updateAjax($kid, $request);
     }
 
     /**
@@ -109,8 +97,14 @@ class KidController extends Controller
      * @param  \App\Kid  $kid
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Kid $kid)
+    public function destroy(Kid $kid, Request $request)
     {
+        if($this->isAjax($request))
+            return $this->destroyAjax($kid, $request);
+    }
 
+    public function list(Request $request) {
+        if($this->isAjax($request))
+            return $this->getList(new Kid, $request);
     }
 }

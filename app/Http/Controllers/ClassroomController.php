@@ -2,11 +2,16 @@
 
 namespace App\Http\Controllers;
 
-use App\Classroom;
-use Illuminate\Http\Request;
+use Illuminate\Http\Request,
+    App\Http\Controllers\AjaxController,
+    App\Classroom;
 
-class ClassroomController extends Controller
+class ClassroomController extends AjaxController
 {
+
+    protected static $viewLists = [
+        'list-classroom' => 'classroom.classroomsList'
+    ];
     /**
      * Display a listing of the resource.
      *
@@ -14,7 +19,7 @@ class ClassroomController extends Controller
      */
     public function index()
     {
-        return view('classroom.index', ['classrooms' => Classroom::all()]);
+        return view('classroom.index', ['classrooms' => Classroom::latest('created_at')->where('deleted', 0)->limit(config('app.limit_on_longlist'))->get()]);
     }
 
     /**
@@ -35,7 +40,8 @@ class ClassroomController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        if($this->isAjax($request))
+            return $this->storeAjax(new Classroom, $request);
     }
 
     /**
@@ -44,12 +50,14 @@ class ClassroomController extends Controller
      * @param  \App\Classroom  $classroom
      * @return \Illuminate\Http\Response
      */
-    public function show(Classroom $classroom)
+    public function show(Classroom $classroom,Request $request)
     {
-        $data['classroom'] = $classroom->payment;
-        $data['desc'] = $classroom->desc;
+        if($this->isAjax($request)) {
+            $data['classroom'] = $classroom->classroom;
+            $data['desc'] = $classroom->desc;
 
-        return $data;
+            return $data;
+        }
     }
 
     /**
@@ -70,9 +78,10 @@ class ClassroomController extends Controller
      * @param  \App\Classroom  $classroom
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Classroom $classroom)
+    public function update(Classroom $classroom, Request $request)
     {
-        //
+        if($this->isAjax($request))
+            return $this->updateAjax($classroom, $request);
     }
 
     /**
@@ -81,8 +90,14 @@ class ClassroomController extends Controller
      * @param  \App\Classroom  $classroom
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Classroom $classroom)
+    public function destroy(Classroom $classroom, Request $request)
     {
-        //
+        if($this->isAjax($request))
+            return $this->destroyAjax($classroom, $request);
+    }
+
+    public function list(Request $request) {
+        if($this->isAjax($request))
+            return $this->getList(new Classroom, $request);
     }
 }

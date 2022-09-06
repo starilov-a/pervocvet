@@ -2,17 +2,21 @@
 
 namespace App\Http\Controllers;
 
-use App\Payment;
-use App\Classroom;
-use App\Kid;
-use Illuminate\Http\Request;
 
-class PaymentController extends Controller
+use Illuminate\Http\Request,
+    App\Http\Controllers\AjaxController,
+    App\Payment,
+    App\Classroom,
+    App\Kid;
+
+class PaymentController extends AjaxController
 {
-    public function __construct()
-    {
-        $this->middleware('auth');
-    }
+    protected static $viewLists = [
+        'list-payment' => 'payment.paymentsList',
+        'list-payment-classrooms' => 'payment.byClassroomsList',
+        'list-payment-kids' => 'payment.byKidsList'
+    ];
+
     /**
      * Display a listing of the resource.
      *
@@ -41,7 +45,8 @@ class PaymentController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        if($this->isAjax($request))
+            return $this->storeAjax(new Payment, $request);
     }
 
     /**
@@ -50,14 +55,16 @@ class PaymentController extends Controller
      * @param  \App\Payment  $payment
      * @return \Illuminate\Http\Response
      */
-    public function show(Payment $payment)
+    public function show(Payment $payment, Request $request)
     {
-        $data['kid_id'] = $payment->kid->id;
-        $data['classroom_id'] = $payment->classroom->id;
-        $data['payment'] = $payment->payment;
-        $data['desc'] = $payment->desc;
+        if($this->isAjax($request)) {
+            $data['kid_id'] = $payment->kid->id;
+            $data['classroom_id'] = $payment->classroom->id;
+            $data['payment'] = $payment->payment;
+            $data['desc'] = $payment->desc;
 
-        return $data;
+            return $data;
+        }
     }
 
     /**
@@ -80,7 +87,8 @@ class PaymentController extends Controller
      */
     public function update(Request $request, Payment $payment)
     {
-        //
+        if($this->isAjax($request))
+            return $this->updateAjax($payment, $request);
     }
 
     /**
@@ -89,8 +97,16 @@ class PaymentController extends Controller
      * @param  \App\Payment  $payment
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Payment $payment)
+    public function destroy(Request $request, Payment $payment)
     {
-        //
+        if(!auth()->user()->isAdmin());
+            return redirect()->back()->withMessage('Доступ запрещен');
+        if($this->isAjax($request))
+            return $this->destroyAjax($payment, $request);
+    }
+
+    public function list(Request $request) {
+        if($this->isAjax($request))
+            return $this->getList(new Payment, $request);
     }
 }
