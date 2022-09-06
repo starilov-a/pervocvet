@@ -52,19 +52,12 @@ class ClassroomController extends AjaxController
      */
     public function show(Classroom $classroom,Request $request)
     {
-<<<<<<< HEAD
         if($this->isAjax($request)) {
             $data['classroom'] = $classroom->classroom;
             $data['desc'] = $classroom->desc;
 
             return $data;
         }
-=======
-        $data['classroom'] = $classroom->classroom;
-        $data['desc'] = $classroom->desc;
-
-        return $data;
->>>>>>> develop-ajax
     }
 
     /**

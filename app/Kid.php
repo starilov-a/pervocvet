@@ -16,31 +16,11 @@ class Kid extends KindergartenService
         'update'=>'Информация о ребёнке изменена',
     ];
 
-<<<<<<< HEAD
     public static $requiredFields = [
         'name' => 'required',
         'classrooms' => 'required',
         'desc' => 'required'
     ];
-=======
-    //AJAX
-    public static function addData($data) {
-        $kid = self::addKid(['name' => $data['name'],'desc' => $data['desc']]);
-        $kid->classrooms()->attach($data['classrooms']);
-    }
-    public static function updateData($data) {
-        $kid = self::find($data['metaData']['data-id-item']);
-        $kid->update([
-            'name' => $data['name'],
-            'desc' => $data['desc']
-        ]);
-        $kid->updateClassrooms($data['classrooms']);
-    }
-    public static function delData($data) {
-        self::find($data['metaData']['data-id-item'])->delete();
-    }
-    //
->>>>>>> develop-ajax
 
     public function classrooms() {
         return $this->belongsToMany(Classroom::class);
