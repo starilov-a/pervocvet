@@ -287,6 +287,25 @@ function getClassroom(id) {
         }
     });
 }
+function getClassroom(id) {
+    editClassroomId = id;
+    $.ajax({
+        headers: {
+            'X-CSRF-TOKEN' : token
+        },
+        url: "/classrooms/"+id,
+        dataType: 'json',
+        method: "GET",
+        contentType: 'application/json',
+        success: function (response) {
+            let form = document.getElementById('form-classroom-edit');
+
+            form.classroom.value = response.classroom;
+            form.desc.value = response.desc;
+            form.setAttribute('data-id-item', id);
+        }
+    });
+}
 
 
 
