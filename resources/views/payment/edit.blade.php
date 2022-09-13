@@ -25,7 +25,19 @@
                         @endforeach
                     </select>
                 </div>
-
+                <div>
+                    <label>Дата фактической оплаты</label>
+                    <input type="date" name="payment_date">
+                </div>
+                <div>
+                    <label>Способ оплаты</label>
+                    <select name="payment_option_id">
+                        <option value="">Не выбрано</option>
+                        @foreach($paymentOptions as $option)
+                            <option value="{{$option->id}}">{{$option->option}}</option>
+                        @endforeach
+                    </select>
+                </div>
                 <div>
                     <label>Сумма оплаты</label>
                     <input name="payment" type="number">

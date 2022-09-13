@@ -4,7 +4,8 @@ namespace App;
 
 use App\Abstracts\KindergartenService,
     App\Kid,
-    App\Classroom;
+    App\Classroom,
+    App\PaymentOption;
 
 
 class Payment extends KindergartenService
@@ -19,15 +20,19 @@ class Payment extends KindergartenService
         'kid_id' => 'required',
         'classroom_id' => 'required',
         'payment' => 'required',
+        'payment_date' => 'required'
     ];
 
-    protected $fillable = ['payment','desc', 'kid_id', 'classroom_id', 'deleted'];
+    protected $fillable = ['payment','desc', 'kid_id', 'classroom_id', 'deleted', 'payment_option_id', 'payment_date'];
 
     public function kid() {
         return $this->belongsTo(Kid::class);
     }
     public function classroom() {
         return $this->belongsTo(Classroom::class);
+    }
+    public function paymentOption() {
+        return $this->belongsTo(PaymentOption::class);
     }
     public static function addPayment($attr) {
         return Payment::create($attr);
@@ -39,7 +44,7 @@ class Payment extends KindergartenService
     }
 
     public static function filterList($filter = null, $view) {
-        $payments = self::latest('created_at')->where('deleted', 0);
+        $payments = self::latest('payment_date')->where('deleted', 0);
 
         $page = 1;
         if(isset($filter['page']))
@@ -49,7 +54,7 @@ class Payment extends KindergartenService
 
         if (isset($filter['dateRange']) && !empty($filter['dateRange'])) {
             $dateRange = explode('|', $filter['dateRange']);
-            $payments = $payments->where('created_at', '>=', $dateRange[0])->where('created_at', '<=', $dateRange[1]);
+            $payments = $payments->where('payment_date', '>=', $dateRange[0])->where('payment_date', '<=', $dateRange[1]);
         }
 
         if(isset($filter['metaData']['count-on-page']))
@@ -62,16 +67,5 @@ class Payment extends KindergartenService
             $payments = $payments->where('kid_id', $filter['kid']);
 
         return view($view, ['payments' => $payments->limit($limit)->get()])->render();
-    }
-
-    public function updateAjax($data){
-        unset($data['metaData']);
-        $data = array_diff($data, array(''));
-        $this->update($data);
-    }
-    public function createAjax($data){
-        unset($data['metaData']);
-        $data = array_diff($data, array(''));
-        $this->create($data);
     }
 }

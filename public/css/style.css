@@ -230,7 +230,7 @@ body, html {
 .table-classrooms .col-5 {
     width: 15%;
 }
-.container-main a, .container-mini-main a{
+.container-main a, .container-mini-main a, a{
     text-decoration: underline;
     cursor: pointer;
     color: #0d6efd;
@@ -242,7 +242,7 @@ thead td {
 }
 td {
     font-weight: 400;
-    font-size: 16px;
+    font-size: 13px;
     padding: 5px;
     text-align: left;
     vertical-align: center;
@@ -311,9 +311,8 @@ tbody td {
 }
 .popap-main > form input, .popap-main > form textarea, .popap-main > form select {
     margin-top: 10px;
-    font-size: 16px;
+    font-size: 12px;
     width: 100%;
-    min-width: 100%;
     max-width: 100%;
     border: 1px solid rgba(0,0,0,.125);
     border-radius: 5px;
@@ -325,7 +324,28 @@ tbody td {
     height: 100px;
 }
 .popap-main > form label {
+    display: block;
     margin-bottom: 5px;
+}
+.popap-main > form .two-column .first-column, .popap-main > form .two-column .second-column {
+    display: inline-block;
+    max-width: 50%;
+    width: 50%;
+}
+.popap-main > form .two-column .first-column input {
+
+}
+.popap-main > form .two-column .second-column {
+    margin-left: 10px;
+    width: calc(50% - 10px);
+}
+.popap-main > form .two-column .second-column input {
+    width: 100%;
+}
+.popap-main > form .two-column a {
+    font-size: 13px;
+    color: rgb(108, 117, 125);
+
 }
 .popap-main > form label > span {
     color: rgb(108, 117, 125);

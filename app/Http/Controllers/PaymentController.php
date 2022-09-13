@@ -7,7 +7,8 @@ use Illuminate\Http\Request,
     App\Http\Controllers\AjaxController,
     App\Payment,
     App\Classroom,
-    App\Kid;
+    App\Kid,
+    App\PaymentOption;
 
 class PaymentController extends AjaxController
 {
@@ -24,7 +25,12 @@ class PaymentController extends AjaxController
      */
     public function index()
     {
-        return view('payment.index', ['classrooms' => Classroom::where('deleted', 0)->get(), 'kids' => Kid::where('deleted', 0)->get(), 'payments' => Payment::where('deleted', 0)->latest('created_at')->limit(config('app.limit_on_longlist'))->get()]);
+        return view('payment.index', [
+            'classrooms' => Classroom::where('deleted', 0)->get(),
+            'kids' => Kid::where('deleted', 0)->get(),
+            'payments' => Payment::where('deleted', 0)->latest('created_at')->limit(config('app.limit_on_longlist'))->get(),
+            'paymentOptions' => PaymentOption::all()
+        ]);
     }
 
     /**
@@ -45,8 +51,17 @@ class PaymentController extends AjaxController
      */
     public function store(Request $request)
     {
-        if($this->isAjax($request))
-            return $this->storeAjax(new Payment, $request);
+        if($this->isAjax($request)) {
+            list($validate, $data) = $this->validateAjaxData(Payment::class, $request);
+            if(!$validate)
+                return $data;
+
+            unset($data['metaData']);
+            $data = array_diff($data, array(''));
+            $payment = Payment::create($data);
+
+            return ['status' => true, 'notificateMessage' => $payment::$notificateMessage['add']];
+        }
     }
 
     /**
@@ -60,6 +75,8 @@ class PaymentController extends AjaxController
         if($this->isAjax($request)) {
             $data['kid_id'] = $payment->kid->id;
             $data['classroom_id'] = $payment->classroom->id;
+            $data['payment_option_id'] = $payment->paymentOption->id;
+            $data['payment_date'] = $payment->payment_date;
             $data['payment'] = $payment->payment;
             $data['desc'] = $payment->desc;
 
@@ -87,8 +104,18 @@ class PaymentController extends AjaxController
      */
     public function update(Request $request, Payment $payment)
     {
-        if($this->isAjax($request))
-            return $this->updateAjax($payment, $request);
+        if($this->isAjax($request)) {
+            list($validate, $data) = $this->validateAjaxData($payment, $request);
+            if(!$validate)
+                return $data;
+
+            unset($data['metaData']);
+            $data = array_diff($data, array(''));
+            $payment->update($data);
+
+            return ['status' => true, 'notificateMessage' => $payment::$notificateMessage['update']];
+        }
+
     }
 
     /**
@@ -101,8 +128,11 @@ class PaymentController extends AjaxController
     {
         if(!auth()->user()->isAdmin());
             return redirect()->back()->withMessage('Доступ запрещен');
-        if($this->isAjax($request))
-            return $this->destroyAjax($payment, $request);
+        if($this->isAjax($request)) {
+            $payment->delete();
+
+            return ['status' => true, 'notificateMessage' => $payment::$notificateMessage['delete']];
+        }
     }
 
     public function list(Request $request) {

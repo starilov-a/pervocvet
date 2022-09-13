@@ -8,7 +8,7 @@ use App\Abstracts\KindergartenService,
 
 class Classroom extends KindergartenService
 {
-    protected $fillable = ['classroom','desc','deleted'];
+    protected $fillable = ['classroom','desc','deleted', 'price_day', 'price_month', 'price_discount', 'count_visits'];
 
     public static $notificateMessage = [
         'add'=>'Услуга добавлена',
@@ -38,14 +38,9 @@ class Classroom extends KindergartenService
     public function kids() {
         return $this->belongsToMany(Kid::class);
     }
-
-    public function updateAjax($data){
+    public function delete() {
         $this->update([
-            'classroom' => $data['classroom'],
-            'desc' => $data['desc']
+            'deleted' => 1
         ]);
-    }
-    public function createAjax($data){
-        $this->create(['classroom' => $data['classroom'],'desc' => $data['desc']]);
     }
 }

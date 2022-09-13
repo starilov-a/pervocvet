@@ -44,8 +44,26 @@ class KidController extends AjaxController
      */
     public function store(Request $request)
     {
-        if($this->isAjax($request))
-            return $this->storeAjax(new Kid, $request);
+        if($this->isAjax($request)) {
+            list($validate, $data) = $this->validateAjaxData(Kid::class, $request);
+            if(!$validate)
+                return $data;
+
+            $kid = Kid::create(['name' => $data['name'],'desc' => $data['desc'], 'birthday' => $data['birthday'], 'parents' => $data['parents']]);
+
+            $parentsAttr = false;
+            if(isset($data['nameParent']) && $data['numberParent'])
+                foreach ($data['nameParent'] as $key => $name)
+                    if (!empty($name) || !empty($data['numberParent'][$key]))
+                        $parentsAttr[] = ['name' => $name, 'number' => (!empty($data['numberParent'][$key])) ? $data['numberParent'][$key] : null];
+
+            if($parentsAttr)
+                $kid->parents()->createMany($parentsAttr);
+            $kid->classrooms()->attach($data['classrooms']);
+
+            return ['status' => true, 'notificateMessage' => $kid::$notificateMessage['add']];
+        }
+
     }
 
     /**
@@ -61,7 +79,8 @@ class KidController extends AjaxController
                 $data['classrooms'] = $kid->classrooms;
                 $data['name'] = $kid->name;
                 $data['desc'] = $kid->desc;
-
+                $data['birthday'] = $kid->birthday;
+                $data['parents'] = $kid->parents;
                 return $data;
             }
 
@@ -87,8 +106,25 @@ class KidController extends AjaxController
      */
     public function update(Kid $kid, Request $request)
     {
-        if($this->isAjax($request))
-            return $this->updateAjax($kid, $request);
+        if($this->isAjax($request)) {
+            list($validate, $data) = $this->validateAjaxData($kid, $request);
+            if(!$validate)
+                return $data;
+
+            if(isset($data['nameParent']) && $data['numberParent'])
+                foreach ($data['nameParent'] as $key => $name)
+                    $parents[]= ['name' => $name, 'number' => (!empty($data['numberParent'][$key])) ? $data['numberParent'][$key] : null];
+
+            $kid->update([
+                'name' => $data['name'],
+                'desc' => $data['desc'],
+                'birthday' => $data['birthday'],
+                'parents' => $data['parents']
+            ]);
+            $kid->updateClassrooms($data['classrooms']);
+
+            return ['status' => true, 'notificateMessage' => $kid::$notificateMessage['update']];
+        }
     }
 
     /**
@@ -99,8 +135,11 @@ class KidController extends AjaxController
      */
     public function destroy(Kid $kid, Request $request)
     {
-        if($this->isAjax($request))
-            return $this->destroyAjax($kid, $request);
+        if($this->isAjax($request)) {
+            $kid->delete();
+            return ['status' => true, 'notificateMessage' => $kid::$notificateMessage['delete']];
+        }
+
     }
 
     public function list(Request $request) {

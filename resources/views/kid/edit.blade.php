@@ -12,9 +12,19 @@
                     <input name="name">
                 </div>
                 <div>
+                    <label>День рождения</label>
+                    <input type="date" name="birthday">
+                </div>
+                <div class="two-column" id="parent-inputs">
+                    <label>
+                        Родители:
+                        <span>Информация о родиятелях (имена, номера и тд.)</span>
+                    </label>
+                    <textarea name="parents"></textarea>
+                </div>
+                <div>
                     <label>
                         Дополнительная информация:
-                        <span>Информация о родиятелях (имена, номера и тд.)</span>
                     </label>
                     <textarea name="desc"></textarea>
                 </div>

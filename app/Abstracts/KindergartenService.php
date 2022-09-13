@@ -16,6 +16,4 @@ abstract class KindergartenService extends Model
     protected static function validateForAjax($data) {
         return Validator::make($data, static::$requiredFields,['required' => 'Необходимо указать поле :attribute'])->getMessageBag()->getMessages();
     }
-    abstract protected function updateAjax($data);
-    abstract protected function createAjax($data);
 }

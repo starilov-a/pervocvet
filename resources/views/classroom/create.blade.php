@@ -12,6 +12,22 @@
                     <input name="classroom">
                 </div>
                 <div>
+                    <label>Цена за одного занятие/один день</label>
+                    <input name="price_day">
+                </div>
+                <div>
+                    <label>Cтоимость абонемента</label>
+                    <input name="price_month">
+                </div>
+                <div>
+                    <label>Cкидка</label>
+                    <input name="price_discount">
+                </div>
+                <div>
+                    <label>Кол-во посещений в абонементе</label>
+                    <input name="count_visits">
+                </div>
+                <div>
                     <label>
                         Дополнительная информация:
                     </label>
