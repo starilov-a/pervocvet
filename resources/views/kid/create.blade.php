@@ -12,9 +12,20 @@
                     <input name="name">
                 </div>
                 <div>
+                    <label>День рождения</label>
+                    <input name="birthday" type="date">
+                </div>
+                <div class="two-column" id="parent-inputs">
+                    <label>
+                        Родители:
+                        <span>Информация о родиятелях (имена, номера и тд.)</span>
+                    </label>
+                    <textarea name="parents"></textarea>
+                </div>
+                <div>
                     <label>
                         Дополнительная информация:
-                        <span>Информация о родиятелях (имена, номера и тд.)</span>
+
                     </label>
                     <textarea name="desc"></textarea>
                 </div>
@@ -31,7 +42,7 @@
         </div>
         <div class="popup-footer">
             <div class="button-add">
-                <button onclick="addPopupAjax(document.getElementById('form-kid-create'))">Добавить</button>
+                <button href="/kids" onclick="addPopupAjax(this, document.getElementById('form-kid-create'))">Добавить</button>
             </div>
             <div style="clear:both"></div>
         </div>

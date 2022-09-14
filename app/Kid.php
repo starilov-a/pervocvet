@@ -2,13 +2,14 @@
 
 namespace App;
 
-use App\Abstracts\KindergartenService,
-    App\Classroom,
-    App\Payment;
+use \App\Abstracts\KindergartenService,
+    \App\Classroom,
+    \App\Payment,
+    \App\KidsParent;
 
 class Kid extends KindergartenService
 {
-    protected $fillable = ['name','desc','deleted'];
+    protected $fillable = ['name','desc','deleted', 'birthday', 'parents'];
 
     public static $notificateMessage = [
         'add'=>'Ребенок добавлен',
@@ -16,23 +17,12 @@ class Kid extends KindergartenService
         'update'=>'Информация о ребёнке изменена',
     ];
 
-    //AJAX
-    public static function addData($data) {
-        $kid = self::addKid(['name' => $data['name'],'desc' => $data['desc']]);
-        $kid->classrooms()->attach($data['classrooms']);
-    }
-    public static function updateData($data) {
-        $kid = self::find($data['metaData']['data-id-item']);
-        $kid->update([
-            'name' => $data['name'],
-            'desc' => $data['desc']
-        ]);
-        $kid->updateClassrooms($data['classrooms']);
-    }
-    public static function delData($data) {
-        self::find($data['metaData']['data-id-item'])->delete();
-    }
-    //
+    public static $requiredFields = [
+        'name' => 'required',
+        'classrooms' => 'required',
+        'desc' => 'required',
+        'birthday' => 'required'
+    ];
 
     public function classrooms() {
         return $this->belongsToMany(Classroom::class);
@@ -44,10 +34,6 @@ class Kid extends KindergartenService
         $this->classrooms()->attach($newClassrooms->diffKeys($oldClassrooms));
         $this->classrooms()->detach($oldClassrooms->diffKeys($newClassrooms));
     }
-    public static function addKid($attr) {
-        return Kid::create($attr);
-    }
-
     public function delete() {
         $this->update([
             'deleted' => 1
@@ -74,5 +60,4 @@ class Kid extends KindergartenService
 
         return view($view, ['kids' => $kids])->render();
     }
-
 }

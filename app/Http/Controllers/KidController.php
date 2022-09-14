@@ -3,21 +3,17 @@
 namespace App\Http\Controllers;
 
 
-use Illuminate\Auth\Events\Validated;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Validator;
-use Symfony\Component\Console\Input\Input;
+use Illuminate\Http\Request,
+    App\Http\Controllers\AjaxController,
+    App\Classroom,
+    App\Kid;
 
-use App\Classroom;
-use App\Kid;
-
-
-class KidController extends Controller
+class KidController extends AjaxController
 {
-    public function __construct()
-    {
-        $this->middleware('auth');
-    }
+    protected static $viewLists = [
+        'list-kid' => 'kid.kidsList'
+    ];
+
     /**
      * Display a listing of the resource.
      *
@@ -48,21 +44,26 @@ class KidController extends Controller
      */
     public function store(Request $request)
     {
-        parse_str($request->getContent(), $data);
+        if($this->isAjax($request)) {
+            list($validate, $data) = $this->validateAjaxData(Kid::class, $request);
+            if(!$validate)
+                return $data;
 
-        $validator = Validator::make($data, [
-            'name' => 'required',
-            'desc' => 'required',
-            'classrooms' => 'required'
-        ],['required' => 'Необходимо указать поле :attribute']);
+            $kid = Kid::create(['name' => $data['name'],'desc' => $data['desc'], 'birthday' => $data['birthday'], 'parents' => $data['parents']]);
 
-        if(!empty($validator->getMessageBag()->getMessages()))
-            return json_encode($validator->getMessageBag()->getMessages());
+            $parentsAttr = false;
+            if(isset($data['nameParent']) && $data['numberParent'])
+                foreach ($data['nameParent'] as $key => $name)
+                    if (!empty($name) || !empty($data['numberParent'][$key]))
+                        $parentsAttr[] = ['name' => $name, 'number' => (!empty($data['numberParent'][$key])) ? $data['numberParent'][$key] : null];
 
-        $kid = Kid::addKid(['name' => $data['name'],'desc' => $data['desc']]);
-        $kid->classrooms()->attach($data['classrooms']);
+            if($parentsAttr)
+                $kid->parents()->createMany($parentsAttr);
+            $kid->classrooms()->attach($data['classrooms']);
 
-        return true;
+            return ['status' => true, 'notificateMessage' => $kid::$notificateMessage['add']];
+        }
+
     }
 
     /**
@@ -71,13 +72,18 @@ class KidController extends Controller
      * @param  \App\Kid  $kid
      * @return \Illuminate\Http\Response
      */
-    public function show(Kid $kid)
+    public function show(Kid $kid, Request $request)
     {
-        $data['classrooms'] = $kid->classrooms;
-        $data['name'] = $kid->name;
-        $data['desc'] = $kid->desc;
+        if($this->isAjax($request))
+            if ($this->isAjax($request)) {
+                $data['classrooms'] = $kid->classrooms;
+                $data['name'] = $kid->name;
+                $data['desc'] = $kid->desc;
+                $data['birthday'] = $kid->birthday;
+                $data['parents'] = $kid->parents;
+                return $data;
+            }
 
-        return $data;
     }
 
     /**
@@ -100,7 +106,25 @@ class KidController extends Controller
      */
     public function update(Kid $kid, Request $request)
     {
+        if($this->isAjax($request)) {
+            list($validate, $data) = $this->validateAjaxData($kid, $request);
+            if(!$validate)
+                return $data;
 
+            if(isset($data['nameParent']) && $data['numberParent'])
+                foreach ($data['nameParent'] as $key => $name)
+                    $parents[]= ['name' => $name, 'number' => (!empty($data['numberParent'][$key])) ? $data['numberParent'][$key] : null];
+
+            $kid->update([
+                'name' => $data['name'],
+                'desc' => $data['desc'],
+                'birthday' => $data['birthday'],
+                'parents' => $data['parents']
+            ]);
+            $kid->updateClassrooms($data['classrooms']);
+
+            return ['status' => true, 'notificateMessage' => $kid::$notificateMessage['update']];
+        }
     }
 
     /**
@@ -109,8 +133,17 @@ class KidController extends Controller
      * @param  \App\Kid  $kid
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Kid $kid)
+    public function destroy(Kid $kid, Request $request)
     {
+        if($this->isAjax($request)) {
+            $kid->delete();
+            return ['status' => true, 'notificateMessage' => $kid::$notificateMessage['delete']];
+        }
 
+    }
+
+    public function list(Request $request) {
+        if($this->isAjax($request))
+            return $this->getList(new Kid, $request);
     }
 }

@@ -12,6 +12,22 @@
                     <input name="classroom">
                 </div>
                 <div>
+                    <label>Цена за одного занятие/один день</label>
+                    <input name="price_day">
+                </div>
+                <div>
+                    <label>Cтоимость абонемента</label>
+                    <input name="price_month">
+                </div>
+                <div>
+                    <label>Cкидка</label>
+                    <input name="price_discount">
+                </div>
+                <div>
+                    <label>Кол-во посещений в абонементе</label>
+                    <input name="count_visits">
+                </div>
+                <div>
                     <label>
                         Дополнительная информация:
                     </label>
@@ -21,10 +37,10 @@
         </div>
         <div class="popup-footer">
             <div class="button-add">
-                <button onclick="editPopupAjax(document.getElementById('form-classroom-edit'))">Изменить</button>
+                <button href='' onclick="editPopupAjax(this, document.getElementById('form-classroom-edit'))">Изменить</button>
             </div>
             <div class="button-del">
-                <button onclick="delPopupAjax(document.getElementById('form-classroom-edit'))">Удалить</button>
+                <button href='' onclick="delPopupAjax(this, document.getElementById('form-classroom-edit'))">Удалить</button>
             </div>
         </div>
     </div>

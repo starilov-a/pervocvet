@@ -25,7 +25,19 @@
                         @endforeach
                     </select>
                 </div>
-
+                <div>
+                    <label>Дата фактической оплаты</label>
+                    <input type="date" name="payment_date">
+                </div>
+                <div>
+                    <label>Способ оплаты</label>
+                    <select name="payment_option_id">
+                        <option value="">Не выбрано</option>
+                        @foreach($paymentOptions as $option)
+                            <option value="{{$option->id}}">{{$option->option}}</option>
+                        @endforeach
+                    </select>
+                </div>
                 <div>
                     <label>Сумма оплаты</label>
                     <input name="payment" type="number">
@@ -41,10 +53,10 @@
         </div>
         <div class="popup-footer">
             <div class="button-add">
-                <button onclick="editPopupAjax(document.getElementById('form-payment-edit'))">Изменить</button>
+                <button href="" onclick="editPopupAjax(this, document.getElementById('form-payment-edit'))">Изменить</button>
             </div>
             <div class="button-del">
-                <button onclick="delPopupAjax(document.getElementById('form-payment-edit'))">Удалить</button>
+                <button href="" onclick="delPopupAjax(this, document.getElementById('form-payment-edit'))">Удалить</button>
             </div>
         </div>
     </div>

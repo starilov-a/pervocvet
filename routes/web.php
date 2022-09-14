@@ -21,19 +21,14 @@ Route::get('/', function () {
 Route::group([
     'middleware' => ['auth', 'twofactor']
 ], function () {
-    Route::get('/kids', 'KidController@index')->name('kids');
-    Route::get('/kids/{kid}', 'KidController@show');
+    Route::resource('/kids', 'KidController');
+    Route::post('/kids/list','KidController@list');
 
-    Route::get('/classrooms', 'ClassroomController@index')->name('classrooms');
-    Route::get('/classrooms/{classroom}', 'ClassroomController@show');
+    Route::resource('/classrooms', 'ClassroomController');
+    Route::post('/classrooms/list','ClassroomController@list');
 
-    Route::get('/payments', 'PaymentController@index')->name('payments');
-    Route::get('/payments/{payment}', 'PaymentController@show');
-
-    Route::post('/ajax/store', 'AjaxController@store');
-    Route::patch('/ajax/update', 'AjaxController@update');
-    Route::delete('/ajax/destroy', 'AjaxController@destroy');
-    Route::post('/ajax/list', 'AjaxController@list');
+    Route::resource('/payments', 'PaymentController');
+    Route::post('/payments/list','PaymentController@list');
 });
 
 Route::get('verify/resend', 'Auth\TwoFactorController@resend')->name('verify.resend');

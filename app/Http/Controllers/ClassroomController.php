@@ -2,11 +2,16 @@
 
 namespace App\Http\Controllers;
 
-use App\Classroom;
-use Illuminate\Http\Request;
+use Illuminate\Http\Request,
+    App\Http\Controllers\AjaxController,
+    App\Classroom;
 
-class ClassroomController extends Controller
+class ClassroomController extends AjaxController
 {
+
+    protected static $viewLists = [
+        'list-classroom' => 'classroom.classroomsList'
+    ];
     /**
      * Display a listing of the resource.
      *
@@ -35,7 +40,22 @@ class ClassroomController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        if($this->isAjax($request)) {
+            list($validate, $data) = $this->validateAjaxData(Classroom::class, $request);
+            if(!$validate)
+                return $data;
+
+            $classroom = Classroom::create([
+                'classroom' => $data['classroom'],
+                'price_day' => $data['price_day'],
+                'price_month' => $data['price_month'],
+                'price_discount' => $data['price_discount'],
+                'count_visits' => $data['count_visits'],
+                'desc' => $data['desc']
+            ]);
+
+            return ['status' => true, 'notificateMessage' => $classroom::$notificateMessage['add']];
+        }
     }
 
     /**
@@ -44,12 +64,18 @@ class ClassroomController extends Controller
      * @param  \App\Classroom  $classroom
      * @return \Illuminate\Http\Response
      */
-    public function show(Classroom $classroom)
+    public function show(Classroom $classroom,Request $request)
     {
-        $data['classroom'] = $classroom->classroom;
-        $data['desc'] = $classroom->desc;
+        if($this->isAjax($request)) {
+            $data['classroom'] = $classroom->classroom;
+            $data['price_day'] = $classroom->price_day;
+            $data['price_month'] = $classroom->price_month;
+            $data['price_discount'] = $classroom->price_discount;
+            $data['count_visits'] = $classroom->count_visits;
+            $data['desc'] = $classroom->desc;
 
-        return $data;
+            return $data;
+        }
     }
 
     /**
@@ -70,9 +96,24 @@ class ClassroomController extends Controller
      * @param  \App\Classroom  $classroom
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Classroom $classroom)
+    public function update(Classroom $classroom, Request $request)
     {
-        //
+        if($this->isAjax($request)) {
+            list($validate, $data) = $this->validateAjaxData($classroom, $request);
+            if(!$validate)
+                return $data;
+
+            $classroom->update([
+                'classroom' => $data['classroom'],
+                'price_day' => $data['price_day'],
+                'price_month' => $data['price_month'],
+                'price_discount' => $data['price_discount'],
+                'count_visits' => $data['count_visits'],
+                'desc' => $data['desc']
+            ]);
+
+            return ['status' => true, 'notificateMessage' => $classroom::$notificateMessage['update']];
+        }
     }
 
     /**
@@ -81,8 +122,16 @@ class ClassroomController extends Controller
      * @param  \App\Classroom  $classroom
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Classroom $classroom)
+    public function destroy(Classroom $classroom, Request $request)
     {
-        //
+        if($this->isAjax($request)) {
+            $classroom->delete();
+            return ['status' => true, 'notificateMessage' => $classroom::$notificateMessage['delete']];
+        }
+    }
+
+    public function list(Request $request) {
+        if($this->isAjax($request))
+            return $this->getList(new Classroom, $request);
     }
 }

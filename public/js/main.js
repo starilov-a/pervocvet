@@ -15,6 +15,7 @@ function changePopup(popup, status, time = null){
     } else {
         if ((form = popup.querySelector('form')) !== null ) {
             form.reset();
+            // clearParents(form)
             clearKidsGroups(form);
             clearErrors(form)
         }
@@ -36,6 +37,16 @@ function addClassroom(id, form) {
                     '</div>');
     }
 }
+// let parentCount = 1;
+// function addParentInput(form, value = false) {
+//     console.log(value);
+//     form.querySelector('div[id=\'parent-inputs\']').querySelector('a').insertAdjacentHTML('beforebegin', '' +
+//         '<div data-id-parent="'+ (value ? value.id : '') + '"><div class="added-parent first-column">\n' +
+//         '                        <input name="nameParent['+ parentCount +']" value="'+ (value ? value.name : '') + '">\n' +
+//         '                    </div><div class="second-column added-parent">\n' +
+//         '                        <input type="number" name="numberParent['+ parentCount++ +']" value="'+ (value ? value.number : '') +'">\n' +
+//         '                    </div></div>');
+// }
 function delClassroom(id) {
     for (i = 0; i < customFormData.classrooms.length; ++i) {
         if (customFormData.classrooms[i] == id) {
@@ -46,6 +57,12 @@ function delClassroom(id) {
 
     document.getElementById('addedClassroom-'+id).remove();
 }
+// function clearParents(form) {
+//     customFormData.classrooms = [];
+//     let groups = form.getElementsByClassName('added-parent');
+//     while(groups[0])
+//         groups[0].parentNode.removeChild(groups[0])
+// }
 function clearKidsGroups(form) {
     customFormData.classrooms = [];
     let groups = form.getElementsByClassName('added-classroom');
@@ -103,12 +120,11 @@ function refreshList(meta, filter = {}) {
 
     filter = Object.assign(filters[meta['data-list']], filter)
     filter.metaData = meta;
-
     $.ajax({
         headers: {
             'X-CSRF-TOKEN' : token
         },
-        url: "/ajax/list",
+        url: "/"+filter.metaData['data-class']+"s/list",
         dataType: 'json',
         method: "POST",
         data: {
@@ -118,7 +134,7 @@ function refreshList(meta, filter = {}) {
         success: function (response) {
             let page = 1;
             let table = document.getElementById(filter.metaData['data-list']);
-            (filter['page'] !== undefined)
+            if (filter['page'] !== undefined)
                 page = filter['page'];
 
             table.setAttribute('data-page', page)
@@ -130,20 +146,21 @@ function refreshList(meta, filter = {}) {
     });
 }
 
-function addPopupAjax(form) {
+function addPopupAjax(button,form) {
+    event.preventDefault();
     let data = serializeForm(form);
     $.ajax({
         headers: {
             'X-CSRF-TOKEN' : token
         },
-        url: "/ajax/store",
+        url: button.getAttribute('href'),
         dataType: 'json',
         processData: 'false',
         data: data,
         method: "POST",
         contentType: 'application/json',
         success: function (response) {
-            if(response.success){
+            if(response.status){
 
                 refreshList(data.metaData);
 
@@ -152,25 +169,26 @@ function addPopupAjax(form) {
             } else {
                 console.log(response);
                 clearErrors(form);
-                createErrors(response, form);
+                createErrors(response.errors, form);
             }
-        }
+        },
     });
 }
-function editPopupAjax(form) {
+function editPopupAjax(button,form) {
+    event.preventDefault();
     let data = serializeForm(form);
     $.ajax({
         headers: {
             'X-CSRF-TOKEN' : token
         },
-        url: "/ajax/update",
+        url: button.getAttribute('href'),
         dataType: 'json',
         processData: 'false',
         data: data,
         method: "PATCH",
         contentType: 'application/json',
         success: function (response) {
-            if(response.success){
+            if(response.status){
                 refreshList(data.metaData);
 
                 changePopup(form.closest('.popup-back'), false);
@@ -178,25 +196,26 @@ function editPopupAjax(form) {
 
             } else {
                 clearErrors(form);
-                createErrors(response, form);
+                createErrors(response.errors, form);
             }
         }
     });
 }
-function delPopupAjax(form) {
+function delPopupAjax(button,form) {
+    event.preventDefault();
     let data = serializeForm(form);
     $.ajax({
         headers: {
             'X-CSRF-TOKEN' : token
         },
-        url: "/ajax/destroy",
+        url: button.getAttribute('href'),
         dataType: 'json',
         processData: 'false',
         data: data,
         method: "DELETE",
         contentType: 'application/json',
         success: function (response) {
-            if(response.success){
+            if(response.status){
 
                 refreshList(data.metaData);
 
@@ -223,13 +242,26 @@ function getKid(id) {
         method: "GET",
         contentType: 'application/json',
         success: function (response) {
+            console.log(response);
             let form = document.getElementById('form-kid-edit');
             form.name.value = response.name;
             form.desc.value = response.desc;
+            form.birthday.value = response.birthday;
+            form.parents.value = response.parents;
             form.setAttribute('data-id-item', id);
-            for(i = 0; i < response.classrooms.length; i++) {
-                addClassroom(response.classrooms[i].id, document.getElementById('form-kid-edit'))
-            }
+
+            for(i = 0; i < response.classrooms.length; i++)
+                addClassroom(response.classrooms[i].id, document.getElementById('form-kid-edit'));
+
+            // if((Object.keys(response.parents).length > 0))
+            //     for(i = 0; i < response.parents.length; i++){
+            //         addParentInput(document.getElementById('form-kid-edit'), response.parents[i])
+            //     }
+
+
+            let popupEdit = document.getElementById('editKid');
+            popupEdit.getElementsByClassName('button-add')[0].getElementsByTagName('button')[0].setAttribute('href','/kids/'+id);
+            popupEdit.getElementsByClassName('button-del')[0].getElementsByTagName('button')[0].setAttribute('href','/kids/'+id);
         }
     });
 }
@@ -251,7 +283,13 @@ function getPayment(id) {
             form.payment.value = response.payment;
             form['classroom_id'].value = response['classroom_id'];
             form['kid_id'].value = response['kid_id'];
+            form['payment_date'].value = response['payment_date'];
+            form['payment_option_id'].value = response['payment_option_id'];
             form.setAttribute('data-id-item', id);
+            let popupEdit = document.getElementById('editPayment');
+            popupEdit.getElementsByClassName('button-add')[0].getElementsByTagName('button')[0].setAttribute('href','/payments/'+id);
+            popupEdit.getElementsByClassName('button-del')[0].getElementsByTagName('button')[0].setAttribute('href','/payments/'+id);
+
         }
     });
 }
@@ -266,11 +304,18 @@ function getClassroom(id) {
         method: "GET",
         contentType: 'application/json',
         success: function (response) {
+            console.log(response);
             let form = document.getElementById('form-classroom-edit');
-
             form.classroom.value = response.classroom;
+            form['price_day'].value = response['price_day'];
+            form['price_month'].value = response['price_month'];
+            form['price_discount'].value = response['price_discount'];
+            form['count_visits'].value = response['count_visits'];
             form.desc.value = response.desc;
             form.setAttribute('data-id-item', id);
+            let popupEdit = document.getElementById('editClassroom');
+            popupEdit.getElementsByClassName('button-add')[0].getElementsByTagName('button')[0].setAttribute('href','/classrooms/'+id);
+            popupEdit.getElementsByClassName('button-del')[0].getElementsByTagName('button')[0].setAttribute('href','/classrooms/'+id);
         }
     });
 }
@@ -288,7 +333,6 @@ dataPiker.daterangepicker({
 });
 
 dataPiker.on('apply.daterangepicker', function(ev, picker) {
-    console.log($(this).data('list'));
     refreshList({'data-class':'payment','data-list': $(this).data('list')}, {dateRange: picker.startDate.format('YYYY-MM-DD') + '|' + picker.endDate.format('YYYY-MM-DD')} )
 });
 
