@@ -8,6 +8,13 @@
 - Учет детских групп с привязкой детей к каждой из них. Фиксация доп. информации о занятиях (стоимость, скидки, преподаватели)
 - Учет приходов по группам с привязкой приход-ребёнок-группа. 
 
+## Интерфейс системы
+
+![image](https://user-images.githubusercontent.com/79093120/193021962-e78546ef-5883-4c53-8193-599fc56eed8c.png)
+![image](https://user-images.githubusercontent.com/79093120/193021995-aa9bc3c5-6b24-495b-948d-199a88a3a001.png)
+![image](https://user-images.githubusercontent.com/79093120/193022014-2828d70b-5a49-4d48-96a2-40c91e708ab6.png)
+![image](https://user-images.githubusercontent.com/79093120/193022048-b6db2a35-e22a-41a9-b723-dad0bd5509ef.png)
+
 ## Будущий функционал
 
 - Полный менеджмент по расписанию - учет посещяемости.
